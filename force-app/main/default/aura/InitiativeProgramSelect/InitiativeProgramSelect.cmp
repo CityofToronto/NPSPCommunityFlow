@@ -4,6 +4,7 @@
     <aura:handler name="init" value="{!this}" action="{!c.init}" />
 
     <lightning:select name="initiative" label="Initiative" aura:id="initiativeSelect" required="true" class="slds-size_1-of-2" onchange="{! c.onChange }">
+        <option value=""></option>
         <aura:iteration items="{!v.initiatives}" var="option">
             <option text="{!option.Name}" value="{!option.Id}" />
         </aura:iteration>
