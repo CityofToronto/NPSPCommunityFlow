@@ -1,16 +1,19 @@
 <aura:component implements="lightning:availableForFlowScreens" access="global" controller="InitiativeProgramController">
     <aura:attribute name="initiatives" type="List" />  
-    <aura:attribute name="programs" type="List" />    
+    <aura:attribute name="initiativeIdSelected" type="String" access="global"/>  
+    <aura:attribute name="programs" type="List" />
+    <aura:attribute name="programIdSelected" type="String" access="global"/>     
     <aura:handler name="init" value="{!this}" action="{!c.init}" />
 
-    <lightning:select name="initiative" label="Initiative" aura:id="initiativeSelect" required="true" class="slds-size_1-of-2" onchange="{! c.onChange }">
+    <lightning:select name="initiative" label="Initiative" aura:id="initiativeSelect" required="true" class="slds-size_1-of-2" onchange="{! c.onChangeInitiative }">
         <option value=""></option>
         <aura:iteration items="{!v.initiatives}" var="option">
             <option text="{!option.Name}" value="{!option.Id}" />
         </aura:iteration>
     </lightning:select>
 
-    <lightning:select name="program" label="Program" aura:id="programSelect" required="true" class="slds-size_1-of-2">
+    <lightning:select name="program" label="Program" aura:id="programSelect" required="true" class="slds-size_1-of-2" onchange="{! c.onChangeProgram }">
+        <option value=""></option>
         <aura:iteration items="{!v.programs}" var="option">
             <option text="{!option.Name}" value="{!option.Id}" />
         </aura:iteration>
