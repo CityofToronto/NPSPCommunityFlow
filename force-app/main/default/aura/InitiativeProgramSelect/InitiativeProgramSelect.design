@@ -1,4 +1,4 @@
 <design:component label="Initiative Program Select">
-    <design:attribute name="initiativeIdSelected" label="Initiative" />
-    <design:attribute name="programIdSelected" label="Program" />
+    <design:attribute name="initiativeIdSelected" label="Initiative Id" />
+    <design:attribute name="programIdSelected" label="Program Id" />
 </design:component>

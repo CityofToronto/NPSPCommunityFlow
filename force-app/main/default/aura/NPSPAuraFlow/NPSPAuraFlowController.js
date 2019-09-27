@@ -18,13 +18,15 @@
         
     handleStatusChange : function (component, event) {
         if(event.getParam("status") === "FINISHED") {
-           var outputVariables = event.getParam("outputVariables");
-           var outputVar;
-           console.log(outputVariables);
+            var outputVariables = event.getParam("outputVariables");
+            var outputVar;
+            console.log(outputVariables);
          //   for(var i = 0; i < outputVariables.length; i++) {
          //      outputVar = outputVariables[i];
          //      console.log(outputVar);
          //   }
+
+            component.find("paymentForm").getElement().submit();
         }
      }
 })
