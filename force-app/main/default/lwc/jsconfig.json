@@ -2,7 +2,14 @@
     "compilerOptions": {
         "experimentalDecorators": true,
         "baseUrl": ".",
-        "paths": {}
+        "paths": {
+            "c/cotSimpleHeader": [
+                "cotSimpleHeader/cotSimpleHeader.js"
+            ],
+            "c/cotFooter": [
+                "cotFooter/cotFooter.js"
+            ]
+        }
     },
     "include": [
         "**/*",

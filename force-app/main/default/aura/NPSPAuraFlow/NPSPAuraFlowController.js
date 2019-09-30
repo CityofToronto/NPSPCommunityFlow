@@ -28,5 +28,11 @@
 
             component.find("paymentForm").getElement().submit();
         }
-     }
+     },
+
+    handleSubmit : function (component, event, helper) {
+        var outputVariables = event.getParam("outputVariables");
+        var outputVar;
+        console.log(outputVariables);
+    }
 })

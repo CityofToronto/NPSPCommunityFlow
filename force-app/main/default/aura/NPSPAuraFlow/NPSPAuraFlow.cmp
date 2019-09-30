@@ -6,4 +6,6 @@
         <input type="hidden" name="ccId" value="1234" />
     </form>
 
+    <lightning:button variant="brand" label="Submit" title="Submit" onclick="{! c.handleSubmit }" />
+
 </aura:component>	
