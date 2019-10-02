@@ -1,7 +1,7 @@
 ({
     init : function (component, event, helper) {
         var inputProgram = typeof helper.getUrlVars()["program"] === "undefined" ? " " : helper.getUrlVars()["program"];
-        console.log(inputProgram);
+        //console.log(inputProgram);
         var flowInputVariables = [
             {
                name : "Input_Program",
@@ -17,6 +17,7 @@
     },
         
     handleStatusChange : function (component, event) {
+        event.preventDefault();
         if(event.getParam("status") === "FINISHED") {
             var outputVariables = event.getParam("outputVariables");
             var outputVar;
@@ -28,11 +29,5 @@
 
             component.find("paymentForm").getElement().submit();
         }
-     },
-
-    handleSubmit : function (component, event, helper) {
-        var outputVariables = event.getParam("outputVariables");
-        var outputVar;
-        console.log(outputVariables);
-    }
+     }
 })

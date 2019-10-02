@@ -1,11 +1,8 @@
 <aura:component implements="forceCommunity:availableForAllPageTypes" access="global">
     <aura:handler name="init" value="{!this}" action="{!c.init}" />
     <lightning:flow aura:id="flowData" onstatuschange="{!c.handleStatusChange}" />
-
+    
     <form name="paymentForm" aura:id="paymentForm" action="https://ptsv2.com/t/0s4nl-1569517146/post" method="POST">
         <input type="hidden" name="ccId" value="1234" />
     </form>
-
-    <lightning:button variant="brand" label="Submit" title="Submit" onclick="{! c.handleSubmit }" />
-
 </aura:component>	
