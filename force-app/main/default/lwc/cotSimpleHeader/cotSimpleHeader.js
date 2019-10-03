@@ -15,10 +15,10 @@ export default class CotSimpleHeader extends LightningElement {
         ]).then(() => {
     
           //initialize the library using a reference to the container element obtained from the DOM
-          const el = this.template.querySelector('header');
+          //const el = this.template.querySelector('header');
 
           /*eslint no-console: ["error", { allow: ["log", "error"] }] */
-          console.log(el);
+          //console.log(el);
         });
     }
 }
