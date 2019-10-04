@@ -4,9 +4,9 @@
     
     <form name="paymentForm" aura:id="paymentForm" method="POST" action="https://esqa.moneris.com/HPPDP/index.php">
 
-        <input type="hidden" name="ps_store_id" value="ARPX3tore2" />
+        <input type="hidden" name="ps_store_id" value="5USDPtore1" />
    
-        <input type="hidden" name="hpp_key" value="hpDXUFPTIB4G" />
+        <input type="hidden" name="hpp_key" value="hp91JHFB6HZM" />
    
         <input type="hidden" name="charge_total" value="1.00" />
    

@@ -8,6 +8,9 @@
             ],
             "c/cotFooter": [
                 "cotFooter/cotFooter.js"
+            ],
+            "c/monerisTxResultScreen": [
+                "monerisTxResultScreen/monerisTxResultScreen.js"
             ]
         }
     },
