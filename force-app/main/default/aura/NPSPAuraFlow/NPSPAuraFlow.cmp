@@ -2,7 +2,14 @@
     <aura:handler name="init" value="{!this}" action="{!c.init}" />
     <lightning:flow aura:id="flowData" onstatuschange="{!c.handleStatusChange}" />
     
-    <form name="paymentForm" aura:id="paymentForm" action="https://ptsv2.com/t/0s4nl-1569517146/post" method="POST">
-        <input type="hidden" name="ccId" value="1234" />
+    <form name="paymentForm" aura:id="paymentForm" method="POST" action="https://esqa.moneris.com/HPPDP/index.php">
+
+        <input type="hidden" name="ps_store_id" value="ARPX3tore2" />
+   
+        <input type="hidden" name="hpp_key" value="hpDXUFPTIB4G" />
+   
+        <input type="hidden" name="charge_total" value="1.00" />
+   
+        <!--MORE OPTIONAL VARIABLES CAN BE DEFINED HERE -->
     </form>
 </aura:component>	
