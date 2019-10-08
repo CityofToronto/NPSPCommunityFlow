@@ -3,11 +3,11 @@
         "experimentalDecorators": true,
         "baseUrl": ".",
         "paths": {
-            "c/cotSimpleHeader": [
-                "cotSimpleHeader/cotSimpleHeader.js"
-            ],
             "c/cotFooter": [
                 "cotFooter/cotFooter.js"
+            ],
+            "c/cotSimpleHeader": [
+                "cotSimpleHeader/cotSimpleHeader.js"
             ],
             "c/monerisTxResultScreen": [
                 "monerisTxResultScreen/monerisTxResultScreen.js"
