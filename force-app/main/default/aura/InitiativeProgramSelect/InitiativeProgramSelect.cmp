@@ -15,7 +15,7 @@
         </aura:iteration>
     </lightning:select>
 
-    <lightning:select name="program" label="Program" aura:id="programSelect" required="true" class="slds-size_1-of-2" onchange="{! c.onChangeProgram }">
+    <lightning:select name="program" label="Program" aura:id="programSelect" required="true" class="flowruntimeInputWrapper" onchange="{! c.onChangeProgram }">
         <option value=""></option>
         <aura:iteration items="{!v.programs}" var="option">
             <option text="{!option.Name}" value="{!option.Id}" selected="{!option.Id==v.programSelected}" />
