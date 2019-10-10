@@ -35,6 +35,12 @@ public with sharing class InitiativeProgramController {
         Blob data = Blob.valueOf(value);
         Blob encryptedData = Crypto.encryptWithManagedIV('AES256', cryptoKey, data);
 
+        //String encrypted = EncodingUtil.base64Encode(encryptedData);
+
+        //decrypt test
+        //Blob datax = EncodingUtil.base64Decode(encrypted);
+        //Blob decryptedData = Crypto.decryptWithManagedIV('AES256', cryptoKey, datax);
+
         return EncodingUtil.base64Encode(encryptedData);
     }
 
