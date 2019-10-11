@@ -1,4 +1,4 @@
-<aura:component implements="forceCommunity:availableForAllPageTypes" access="global" controller="InitiativeProgramController">
+<aura:component implements="forceCommunity:availableForAllPageTypes" access="global" controller="NPSPFlowController">
     <a name="main"></a>
     
     <aura:attribute name="dmsSettings" type="Map" />  
