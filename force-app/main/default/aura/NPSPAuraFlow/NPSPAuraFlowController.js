@@ -34,9 +34,10 @@
         });
 
         if(formResults.outputStatusFinished.value === true) {
-            var navigate = component.get('v.navigateFlow');
-            console.log(navigate);
-            navigate("FINISH");
+            var cmpEvent = component.getEvent("flowEvent");
+            cmpEvent.setParams({"flowComplete" : true });
+            console.log(cmpEvent.getParams());
+            cmpEvent.fire();
         }
 
         if(event.getParam("status") === "FINISHED") {

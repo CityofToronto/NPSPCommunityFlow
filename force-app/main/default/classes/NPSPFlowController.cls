@@ -1,4 +1,4 @@
-public with sharing class NPSPFlowController {
+public without sharing class NPSPFlowController {
     @AuraEnabled
     public static List<sObject> executeSoql(String soql) {
         List<sObject> result = Database.query(soql);

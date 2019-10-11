@@ -1,5 +1,8 @@
 <aura:component access="global" implements="lightning:availableForFlowScreens">
-        
+   
+   <!-- Handle any event notification to trigger navigation change -->
+   <aura:handler name="flowEvent" event="c:NPSPFlowEvent" action="{!c.handleComponentEvent}"/>
+
    <!-- Determine which actions are available -->
    <aura:attribute name="canPause" type="Boolean" />
    <aura:attribute name="canBack" type="Boolean" />
