@@ -32,27 +32,54 @@
         outputVariables.forEach(function(item, index) {
             formResults[item.name] = item;
         });
+        console.log(formResults);
+        if(event.getParam("status") === "FINISHED") {
+            component.find("paymentAmount").set("v.value", formResults.Donation_Amount_Value.value);
+            component.find("orderId").set("v.value", formResults.savedOpportunityId.value);
 
-        if(formResults.outputStatusFinished.value === true) {
-            var cmpEvent = component.getEvent("flowEvent");
-            cmpEvent.setParams({"flowComplete" : true });
-            console.log(cmpEvent.getParams());
-            cmpEvent.fire();
+            var contactId = formResults.existingContactId.value;
+            var opportunityId = formResults.savedOpportunityId.value;
+            helper.apex(component, "createOpportunityContactRole", { contactId : contactId, opportunityId: opportunityId })
+            .then(function (result) {
+
+            }).catch(function (error) {
+                //do something about the error
+            });
+
+            var homePhone = formResults.UpdateContactHomePhone.value;
+            
+            if(homePhone && homePhone.length > 0) {
+                var mobilePhone = formResults.UpdateContactMobilePhone.value; 
+                var mailingCity = formResults.UpdateContactMailingCity.value; 
+                var mailingCountry = formResults.UpdateContactMailingCountry.value; 
+                var mailingPostalCode = formResults.UpdateContactMailingPostalCode.value; 
+                var mailingState = formResults.UpdateContactMailingState.value;
+                var mailingStreet = formResults.UpdateContactMailingStreet.value;
+                helper.apex(component, "updateExistingContact", { contactId:contactId,homePhone:homePhone,mobilePhone:mobilePhone,
+                    mailingCity:mailingCity,mailingCountry:mailingCountry,mailingPostalCode:mailingPostalCode,
+                    mailingState:mailingState,mailingStreet:mailingStreet })
+                .then(function (result) {
+
+                }).catch(function (error) {
+                    //do something about the error
+                });
+            }
         }
 
-        if(event.getParam("status") === "FINISHED") {
-            console.log(formResults);
-            component.find("paymentAmount").set("v.value", formResults.Donation_Amount_Value.value);
+        //Flow has looped again, if the form is complete submit it to Moneris
+        if(event.getParam("status") === "STARTED") {
+            var orderId = component.find("orderId").get("v.value");
+            var amount = component.find("paymentAmount").get("v.value");
 
-            // helper.apex(component, "encryptData", { value : formResults.savedOpportunityId.value})
-            // .then(function (result) {
-            //     component.find("orderId").set("v.value", result);
-            //     component.find("paymentForm").getElement().submit();
-            // }).catch(function (error) {
-            //     //do something about the error
-            // });
-
-            component.find("paymentForm").getElement().submit();
+            if(orderId && orderId.length>0 && amount && amount>0) {
+                helper.apex(component, "encryptData", { value : orderId})
+                .then(function (result) {
+                    component.find("orderId").set("v.value", result);
+                    component.find("paymentForm").getElement().submit();
+                }).catch(function (error) {
+                    //do something about the error
+                });
+            }
         }
      }
 })

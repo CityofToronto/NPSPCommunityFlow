@@ -21,10 +21,5 @@
       // Fire that action
       var navigate = cmp.get('v.navigateFlow');
       navigate(actionClicked);
-   },
-
-   handleComponentEvent : function(cmp, event) {
-      var flowComplete = event.getParam("flowComplete");
-      console.log(flowComplete);
    }
  })
