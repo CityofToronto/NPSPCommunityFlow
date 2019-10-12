@@ -34,7 +34,7 @@
         });
         console.log(formResults);
         if(event.getParam("status") === "FINISHED") {
-            component.find("paymentAmount").set("v.value", formResults.Donation_Amount_Value.value);
+            component.find("paymentAmount").set("v.value", formResults.Donation_Amount_Value.value.toFixed(2));
             component.find("orderId").set("v.value", formResults.savedOpportunityId.value);
 
             var contactId = formResults.existingContactId.value;

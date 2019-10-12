@@ -19,12 +19,6 @@ public without sharing class NPSPFlowController {
         Blob data = Blob.valueOf(value);
         Blob encryptedData = Crypto.encryptWithManagedIV('AES128', cryptoKey, data);
 
-        //String encrypted = EncodingUtil.base64Encode(encryptedData);
-
-        //decrypt test
-        //Blob datax = EncodingUtil.base64Decode(encrypted);
-        //Blob decryptedData = Crypto.decryptWithManagedIV('AES128', cryptoKey, datax);
-
         return EncodingUtil.base64Encode(encryptedData);
     }
 
