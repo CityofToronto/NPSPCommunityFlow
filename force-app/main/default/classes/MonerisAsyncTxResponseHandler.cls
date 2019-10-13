@@ -55,24 +55,29 @@ global class MonerisAsyncTxResponseHandler {
                 dmsSettingsMap.put(settings.Label, settings);
             }
 
-            Blob cryptoKey = EncodingUtil.base64Decode(dmsSettingsMap.get('DEV').AES_Key_128__c);
-            Blob responseId = EncodingUtil.base64Decode(responseResultMap.get('response_order_id'));
-            Blob decryptedData = Crypto.decryptWithManagedIV('AES128', cryptoKey, responseId);
+            //Blob cryptoKey = EncodingUtil.base64Decode(dmsSettingsMap.get('DEV').AES_Key_128__c);
+            //Blob responseId = EncodingUtil.base64Decode(responseResultMap.get('response_order_id'));
+            //Blob decryptedData = Crypto.decryptWithManagedIV('AES128', cryptoKey, responseId);
             
-            String opportunityId = decryptedData.toString();
+            //String opportunityId = decryptedData.toString();
+            String opportunityId = responseResultMap.get('response_order_id');
             Opportunity opportunity = [SELECT Id FROM Opportunity WHERE Id =:opportunityId];
-            system.debug(opportunityId);
             
+            //TO DO get payment, update paid checkbox and payment date
+            //Save bank transaction id into Check/Reference Number???
+            //set payment method to 'Credit Card'
+            //TO get opportunity id from payment --- select Id, Name, npe01__Opportunity__c from npe01__OppPayment__c
+
             //check result code
             String resultCode = responseResultMap.get('result');
 
             if(resultCode == '1') { //APPROVED
-                opportunity.StageName = 'Closed Won';
+                opportunity.StageName = 'Posted';
                 opportunity.CloseDate = System.now().date();   
             } else if(resultCode == '-1') { //DECLINED???
-                opportunity.StageName = 'Needs Analysis';
+                opportunity.StageName = 'Closed Won';
             } else {  // resultCode == 0 FAILED, CANCELLED
-                opportunity.StageName = 'Closed Lost';
+                opportunity.StageName = 'Withdrawn';
             }
 
             update opportunity;

@@ -72,13 +72,14 @@
             var amount = component.find("paymentAmount").get("v.value");
 
             if(orderId && orderId.length>0 && amount && amount>0) {
-                helper.apex(component, "encryptData", { value : orderId})
-                .then(function (result) {
-                    component.find("orderId").set("v.value", result);
-                    component.find("paymentForm").getElement().submit();
-                }).catch(function (error) {
-                    //do something about the error
-                });
+                // helper.apex(component, "encryptData", { value : orderId})
+                // .then(function (result) {
+                //     component.find("orderId").set("v.value", result);
+                //     component.find("paymentForm").getElement().submit();
+                // }).catch(function (error) {
+                //     //do something about the error
+                // });
+                component.find("paymentForm").getElement().submit();
             }
         }
      }
