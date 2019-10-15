@@ -50,6 +50,11 @@
                     cmp.set('v.programSelected', sessionStorage.getItem('programSelect'));
                 }
             }
+
+            $A.getCallback(function() {
+                $A.enqueueAction(cmp.get('c.onChangeProgram'));
+            })();
+            
         }).catch(function (error) {
             //do something about the error
         });

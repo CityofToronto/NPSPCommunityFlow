@@ -35,11 +35,20 @@
         console.log(formResults);
         if(event.getParam("status") === "FINISHED") {
             component.find("paymentAmount").set("v.value", formResults.Donation_Amount_Value.value.toFixed(2));
-            component.find("orderId").set("v.value", formResults.savedOpportunityId.value);
+            component.find("orderId").set("v.value", formResults.savedPaymentId.value);
 
             var contactId = formResults.existingContactId.value;
             var opportunityId = formResults.savedOpportunityId.value;
+            var campaignId = formResults.selectedProgramId.value;
+            var campaignOwnerId = formResults.campaignRecordOwnerId.value;
             helper.apex(component, "createOpportunityContactRole", { contactId : contactId, opportunityId: opportunityId })
+            .then(function (result) {
+
+            }).catch(function (error) {
+                //do something about the error
+            });
+
+            helper.apex(component, "updateOpportunityCampaign", { opportunityId : opportunityId, campaignId: campaignId, campaignOwnerId: campaignOwnerId })
             .then(function (result) {
 
             }).catch(function (error) {

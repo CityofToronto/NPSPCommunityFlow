@@ -1,8 +1,5 @@
 @RestResource(urlMapping='/MonerisAsyncTxResponse/*')
 global class MonerisAsyncTxResponseHandler {
-    public MonerisAsyncTxResponseHandler() {
-
-    }
 
     @HttpPost
     global static void parseResponse() {
@@ -47,7 +44,8 @@ global class MonerisAsyncTxResponseHandler {
             }
             system.debug('AsynchronousTransactionResponse :: parseMonerisResponse :: responseResultMap' + responseResultMap);
             
-            //Decrypt response order id to get opportunity id
+            /** CODE if decryption is needed 
+            //Decrypt response order id to get payment id
             DMS_Settings__mdt[] dmsSettings = [SELECT Label, AES_Key_128__c, Moneris_HPP_Key__c, Moneris_Store_Id__c, Moneris_URL__c, Flow_Name__c FROM DMS_Settings__mdt];
             Map<String, DMS_Settings__mdt> dmsSettingsMap = new Map<String, DMS_Settings__mdt>();
 
@@ -55,31 +53,37 @@ global class MonerisAsyncTxResponseHandler {
                 dmsSettingsMap.put(settings.Label, settings);
             }
 
-            //Blob cryptoKey = EncodingUtil.base64Decode(dmsSettingsMap.get('DEV').AES_Key_128__c);
-            //Blob responseId = EncodingUtil.base64Decode(responseResultMap.get('response_order_id'));
-            //Blob decryptedData = Crypto.decryptWithManagedIV('AES128', cryptoKey, responseId);
-            
-            //String opportunityId = decryptedData.toString();
-            String opportunityId = responseResultMap.get('response_order_id');
-            Opportunity opportunity = [SELECT Id FROM Opportunity WHERE Id =:opportunityId];
-            
-            //TO DO get payment, update paid checkbox and payment date
-            //Save bank transaction id into Check/Reference Number???
-            //set payment method to 'Credit Card'
-            //TO get opportunity id from payment --- select Id, Name, npe01__Opportunity__c from npe01__OppPayment__c
+            Blob cryptoKey = EncodingUtil.base64Decode(dmsSettingsMap.get('DEV').AES_Key_128__c);
+            Blob responseId = EncodingUtil.base64Decode(responseResultMap.get('response_order_id'));
+            Blob decryptedData = Crypto.decryptWithManagedIV('AES128', cryptoKey, responseId);
+
+            String paymentId = decryptedData.toString();
+            **/
+
+            String paymentId = responseResultMap.get('response_order_id');
+            npe01__OppPayment__c payment = [SELECT Id, npe01__Opportunity__c FROM npe01__OppPayment__c WHERE Id =: paymentId];
+            payment.npe01__Paid__c = false;
+            payment.npe01__Check_Reference_Number__c = responseResultMap.get('bank_transaction_id');
+            payment.npe01__Payment_Amount__c = Decimal.valueOf(responseResultMap.get('charge_total'));
+
+            Opportunity opportunity = [SELECT Id FROM Opportunity WHERE Id =: payment.npe01__Opportunity__c];
 
             //check result code
             String resultCode = responseResultMap.get('result');
-
+            payment.npe01__Custom_Payment_Field__c = resultCode;
+            System.debug('Result ' + resultCode);
             if(resultCode == '1') { //APPROVED
                 opportunity.StageName = 'Posted';
-                opportunity.CloseDate = System.now().date();   
+                opportunity.CloseDate = System.now().date(); 
+                payment.npe01__Paid__c = true;
+                payment.npe01__Payment_Date__c = System.now().date();
             } else if(resultCode == '-1') { //DECLINED???
                 opportunity.StageName = 'Closed Won';
             } else {  // resultCode == 0 FAILED, CANCELLED
                 opportunity.StageName = 'Withdrawn';
             }
 
+            update payment;
             update opportunity;
   
         } catch (Exception ex) {

@@ -24,7 +24,7 @@ public without sharing class NPSPFlowController {
 
     @AuraEnabled
     public static String createOpportunityContactRole(String contactId, String opportunityId) {
-        OpportunityContactRole opr = new OpportunityContactRole(ContactId=contactId, OpportunityId=opportunityId, Role='Donor');
+        OpportunityContactRole opr = new OpportunityContactRole(ContactId=contactId, OpportunityId=opportunityId);
         insert opr;
         return opr.Id;
     }
@@ -44,5 +44,15 @@ public without sharing class NPSPFlowController {
 
         update contact;
         return contact.Id;
+    }
+
+    @AuraEnabled
+    public static String updateOpportunityCampaign(String opportunityId, String campaignId, String campaignOwnerId) {
+        Opportunity opportunity = [SELECT Id FROM Opportunity WHERE Id =:opportunityId];
+        opportunity.CampaignId = campaignId;
+        opportunity.OwnerId = campaignOwnerId;
+
+        update opportunity;
+        return opportunity.Id;
     }
 }
