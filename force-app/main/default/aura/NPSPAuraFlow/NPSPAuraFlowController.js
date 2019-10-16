@@ -33,6 +33,7 @@
             formResults[item.name] = item;
         });
         console.log(formResults);
+
         if(event.getParam("status") === "FINISHED") {
             component.find("paymentAmount").set("v.value", formResults.Donation_Amount_Value.value.toFixed(2));
             component.find("orderId").set("v.value", formResults.savedPaymentId.value);
@@ -41,6 +42,7 @@
             var opportunityId = formResults.savedOpportunityId.value;
             var campaignId = formResults.selectedProgramId.value;
             var campaignOwnerId = formResults.campaignRecordOwnerId.value;
+
             helper.apex(component, "createOpportunityContactRole", { contactId : contactId, opportunityId: opportunityId })
             .then(function (result) {
 
@@ -64,6 +66,7 @@
                 var mailingPostalCode = formResults.UpdateContactMailingPostalCode.value; 
                 var mailingState = formResults.UpdateContactMailingState.value;
                 var mailingStreet = formResults.UpdateContactMailingStreet.value;
+
                 helper.apex(component, "updateExistingContact", { contactId:contactId,homePhone:homePhone,mobilePhone:mobilePhone,
                     mailingCity:mailingCity,mailingCountry:mailingCountry,mailingPostalCode:mailingPostalCode,
                     mailingState:mailingState,mailingStreet:mailingStreet })
@@ -73,23 +76,9 @@
                     //do something about the error
                 });
             }
-        }
 
-        //Flow has looped again, if the form is complete submit it to Moneris
-        if(event.getParam("status") === "STARTED") {
-            var orderId = component.find("orderId").get("v.value");
-            var amount = component.find("paymentAmount").get("v.value");
-
-            if(orderId && orderId.length>0 && amount && amount>0) {
-                // helper.apex(component, "encryptData", { value : orderId})
-                // .then(function (result) {
-                //     component.find("orderId").set("v.value", result);
-                //     component.find("paymentForm").getElement().submit();
-                // }).catch(function (error) {
-                //     //do something about the error
-                // });
-                component.find("paymentForm").getElement().submit();
-            }
+            //Submit form to Moneris
+            component.find("paymentForm").getElement().submit();
         }
      }
 })

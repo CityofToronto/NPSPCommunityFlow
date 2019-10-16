@@ -11,9 +11,7 @@
                 }
             }
 
-            $A.getCallback(function() {
-                $A.enqueueAction(cmp.get('c.onChangeInitiative'));
-            })();
+            $A.enqueueAction(cmp.get('c.onChangeInitiative'));
             
         }).catch(function (error) {
             //do something about the error
@@ -51,10 +49,8 @@
                 }
             }
 
-            $A.getCallback(function() {
-                $A.enqueueAction(cmp.get('c.onChangeProgram'));
-            })();
-            
+            $A.enqueueAction(cmp.get('c.onChangeProgram'));
+
         }).catch(function (error) {
             //do something about the error
         });
@@ -63,5 +59,22 @@
     onChangeProgram: function (cmp, evt, helper) {
         var programId = cmp.find('programSelect').get('v.value');
         cmp.set('v.programIdSelected', programId);
+    },
+
+    handleApplicationEvent : function(cmp, event, helper) {
+        var programId = event.getParam("programId");
+
+        helper.apex(cmp, "getParentIdByProgramId", {programId : programId})
+        .then(function (result) {
+            cmp.find('initiativeSelect').set('v.value',result);
+            cmp.set('v.initiativeIdSelected', result);
+            setTimeout(function () {
+                 cmp.find('programSelect').set('v.value',programId);
+                 cmp.set('v.programIdSelected', programId);
+    		}, 800);
+
+        }).catch(function (error) {
+            //do something about the error
+        });
     }
 })

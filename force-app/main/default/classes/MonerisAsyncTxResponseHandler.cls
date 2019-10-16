@@ -31,7 +31,7 @@ global class MonerisAsyncTxResponseHandler {
             respIp = RestContext.request.remoteAddress;
             
             // Parse XML Response
-            system.debug('AsynchronousTransactionResponse :: parseMonerisResponse :: resp' + resp);
+            system.debug('AsynchronousTransactionResponse :: parseResponse :: resp = ' + resp);
             DOM.Document xmlDOC = new DOM.Document();
             xmlDOC.load(resp);
             DOM.XMLNode rootElement = xmlDOC.getRootElement();
@@ -42,7 +42,7 @@ global class MonerisAsyncTxResponseHandler {
                     responseResultMap.put(keyName, xmlnodeobj.getText());
                 }
             }
-            system.debug('AsynchronousTransactionResponse :: parseMonerisResponse :: responseResultMap' + responseResultMap);
+            system.debug('AsynchronousTransactionResponse :: parseResponse :: responseResultMap = ' + responseResultMap);
             
             /** CODE if decryption is needed 
             //Decrypt response order id to get payment id
@@ -61,25 +61,28 @@ global class MonerisAsyncTxResponseHandler {
             **/
 
             String paymentId = responseResultMap.get('response_order_id');
+            String paymentAmount = responseResultMap.get('charge_total');
             npe01__OppPayment__c payment = [SELECT Id, npe01__Opportunity__c FROM npe01__OppPayment__c WHERE Id =: paymentId];
             payment.npe01__Paid__c = false;
             payment.npe01__Check_Reference_Number__c = responseResultMap.get('bank_transaction_id');
-            payment.npe01__Payment_Amount__c = Decimal.valueOf(responseResultMap.get('charge_total'));
+            if(!String.isEmpty(paymentAmount)) {
+                payment.npe01__Payment_Amount__c = Decimal.valueOf(paymentAmount);
+            }
 
             Opportunity opportunity = [SELECT Id FROM Opportunity WHERE Id =: payment.npe01__Opportunity__c];
 
             //check result code
             String resultCode = responseResultMap.get('result');
-            payment.npe01__Custom_Payment_Field__c = resultCode;
-            System.debug('Result ' + resultCode);
+            payment.npe01__Custom_Payment_Field__c = responseResultMap.get('response_code');
+
             if(resultCode == '1') { //APPROVED
                 opportunity.StageName = 'Posted';
                 opportunity.CloseDate = System.now().date(); 
                 payment.npe01__Paid__c = true;
                 payment.npe01__Payment_Date__c = System.now().date();
-            } else if(resultCode == '-1') { //DECLINED???
-                opportunity.StageName = 'Closed Won';
-            } else {  // resultCode == 0 FAILED, CANCELLED
+            } else if(resultCode == '-1') { //CANCELLED
+                opportunity.StageName = 'Withdrawn';
+            } else {  // resultCode == 0 FAILED
                 opportunity.StageName = 'Withdrawn';
             }
 
@@ -87,7 +90,7 @@ global class MonerisAsyncTxResponseHandler {
             update opportunity;
   
         } catch (Exception ex) {
-            system.debug('AsynchronousTransactionResponse :: parseMonerisResponse :: ex=' + ex);
+            system.debug('AsynchronousTransactionResponse :: parseResponse :: ex = ' + ex);
         }
     }
 

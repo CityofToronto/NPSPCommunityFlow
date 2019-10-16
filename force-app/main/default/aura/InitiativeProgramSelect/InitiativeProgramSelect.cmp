@@ -1,9 +1,12 @@
 <aura:component access="global" implements="lightning:availableForFlowScreens" controller="InitiativeProgramController">
+
     <aura:attribute name="initiatives" type="List" />  
     <aura:attribute name="initiativeIdSelected" type="String" access="global"/>  
     <aura:attribute name="programs" type="List" />
     <aura:attribute name="programIdSelected" type="String" access="global"/>     
     <aura:handler name="init" value="{!this}" action="{!c.init}" />
+
+    <aura:handler event="c:programSetEvent" action="{!c.handleApplicationEvent}"/>
 
     <!--Declare the validation attribute so it can store the validation logic.--> 
     <aura:attribute name="validate" type="Aura.Action"/> 
