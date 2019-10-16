@@ -34,6 +34,13 @@
         });
         console.log(formResults);
 
+        //Flow started, send event notification to set program automatically if provided in url
+        if(event.getParam("status") === "STARTED") {
+            var appEvent = $A.get("e.c:programSetEvent");
+            appEvent.setParams({"programId" : formResults.Input_Program.value});
+            appEvent.fire();
+        }
+
         if(event.getParam("status") === "FINISHED") {
             component.find("paymentAmount").set("v.value", formResults.Donation_Amount_Value.value.toFixed(2));
             component.find("orderId").set("v.value", formResults.savedPaymentId.value);
