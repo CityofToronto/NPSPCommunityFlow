@@ -36,9 +36,13 @@
 
         //Flow started, send event notification to set program automatically if provided in url
         if(event.getParam("status") === "STARTED") {
-            var appEvent = $A.get("e.c:SetProgramEvent");
-            appEvent.setParams({"programId" : formResults.Input_Program.value});
-            appEvent.fire();
+            if(formResults.Input_Program.value.trim()) {
+                var appEvent = $A.get("e.c:SetProgramEvent");
+                appEvent.setParams({"programId" : formResults.Input_Program.value});
+                appEvent.fire();
+            }
+
+            $A.util.addClass(component.find("loadingMessage"), "hidden");
         }
 
         if(event.getParam("status") === "FINISHED") {

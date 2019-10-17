@@ -7,7 +7,8 @@
 
     <div aura:id="flowContainer">
         <h1 class="slds-m-left_x-large">DonateTO</h1>
-        
+        <div aura:id="loadingMessage" class="jumbotron slds-m-left_x-large alert alert-info"><p>Please wait while we retrieve your donation form ...</p></div>
+
         <lightning:flow aura:id="flowData" onstatuschange="{!c.handleStatusChange}" />
         
         <form name="paymentForm" aura:id="paymentForm" method="POST" action="{!v.dmsSettings.DEV.Moneris_URL__c}">

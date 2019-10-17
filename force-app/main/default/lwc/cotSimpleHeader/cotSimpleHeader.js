@@ -1,3 +1,5 @@
+/* eslint-disable @lwc/lwc/no-inner-html */
+/* eslint-disable @lwc/lwc/no-document-query */
 import { LightningElement } from 'lwc';
 import { loadStyle } from 'lightning/platformResourceLoader';
 
@@ -20,5 +22,21 @@ export default class CotSimpleHeader extends LightningElement {
           /*eslint no-console: ["error", { allow: ["log", "error"] }] */
           //console.log(el);
         });
+    }
+
+    renderedCallback() {
+        let pageTitle;
+        if(document.querySelector('h1')) {
+          pageTitle = document.querySelector('h1').innerText;
+        }
+        
+        let currentBreadCrumb = this.template.querySelector('.breadcrumb').innerHTML;
+
+        if(pageTitle !== 'DonateTO') {
+          currentBreadCrumb += '<li><a href="../">DonateTO</a></li>'
+        }
+        currentBreadCrumb += '<li>' + pageTitle + '</li>'; 
+
+        this.template.querySelector('.breadcrumb').innerHTML = currentBreadCrumb;
     }
 }
