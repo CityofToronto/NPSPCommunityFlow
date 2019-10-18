@@ -64,14 +64,16 @@ global without sharing class NPSPFlowController {
     }
 
     @InvocableMethod(label='Get a list of NPSP account record type ids' description='Returns account record type ids ordered HH_Account, Organization')
-    public static List<String> getNPSPAccountRecordTypeIds() {
+    public static List<List<String>> getNPSPAccountRecordTypeIds() {
         List<RecordType> recordTypes = [SELECT Id from RecordType where sObjectType='Account' AND DeveloperName IN ('HH_Account', 'Organization') AND isActive = TRUE ORDER BY DeveloperName];
         List<String> recordTypeIds = new List<String>();
-
+		List<List<String>> recordTypeIdsList = new list<List<String>>();
+        
         for(RecordType recordType : recordTypes) {
             recordTypeIds.add(recordType.Id);
         }
-
-        return recordTypeIds;
+        
+		recordTypeIdsList.add(recordTypeIds);
+        return recordTypeIdsList;
     }
 }
