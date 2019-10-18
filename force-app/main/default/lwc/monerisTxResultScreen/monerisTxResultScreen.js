@@ -1,9 +1,12 @@
 /* eslint-disable dot-notation */
 /* eslint-disable no-console */
-import { LightningElement, track } from 'lwc';
+import { LightningElement, track, wire } from 'lwc';
+import { fireEvent } from 'c/pubsub';
+import { CurrentPageReference } from 'lightning/navigation';
 
 export default class MonerisTxResultScreen extends LightningElement {
 
+    @wire(CurrentPageReference) pageRef;
     @track urlVars = {};
     @track h2Message = '';
     
@@ -21,5 +24,10 @@ export default class MonerisTxResultScreen extends LightningElement {
         decodeURIComponent(window.location.href).replace(/[?&]+([^=&]+)=([^&]*)/gi, (m,key,value) => {
             this.urlVars[key] = value;
         });
+    }
+
+    renderedCallback() {
+        if(this.template.querySelector('h1'))
+            fireEvent(this.pageRef, 'pageRenderEvent', this.template.querySelector('h1').innerText);
     }
 }

@@ -11,6 +11,9 @@
             ],
             "c/monerisTxResultScreen": [
                 "monerisTxResultScreen/monerisTxResultScreen.js"
+            ],
+            "c/pubsub": [
+                "pubsub/pubsub.js"
             ]
         }
     },

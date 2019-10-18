@@ -15,13 +15,9 @@
         // In that component, start your flow. Reference the flow's Unique Name.
         flow.startFlow("DonateTO", flowInputVariables);
 
-        helper.soql(component, "SELECT Label, AES_Key_256__c, Moneris_HPP_Key__c, Moneris_Store_Id__c, Moneris_URL__c, Flow_Name__c FROM DMS_Settings__mdt")
+        helper.apex(component, "getDMSSettings", {})
         .then(function (settings) {
-            settings.forEach(function(item, index) {
-                helper.settingsObj[item.Label] = item;
-            });
-
-            component.set('v.dmsSettings', helper.settingsObj);
+            component.set('v.dmsSettings', settings);
         })
     },
         
