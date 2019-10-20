@@ -77,7 +77,9 @@ global class MonerisAsyncTxResponseHandler {
 
             if(resultCode == '1') { //APPROVED
                 opportunity.StageName = 'Posted';
-                opportunity.CloseDate = System.now().date(); 
+                opportunity.CloseDate = System.now().date();
+                //Setting opportunity acknowledge status triggers email workflow automatically
+                opportunity.npsp__Acknowledgment_Status__c = 'Email Acknowledgment Now'; 
                 payment.npe01__Paid__c = true;
                 payment.npe01__Payment_Date__c = System.now().date();
             } else if(resultCode == '-1') { //CANCELLED

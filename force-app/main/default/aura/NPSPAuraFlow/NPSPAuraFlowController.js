@@ -50,12 +50,12 @@
             var campaignId = formResults.selectedProgramId.value;
             var campaignOwnerId = formResults.campaignRecordOwnerId.value;
 
-            helper.apex(component, "createOpportunityContactRole", { contactId : contactId, opportunityId: opportunityId })
-            .then(function (result) {
+            // helper.apex(component, "createOpportunityContactRole", { contactId : contactId, opportunityId: opportunityId })
+            // .then(function (result) {
 
-            }).catch(function (error) {
-                //do something about the error
-            });
+            // }).catch(function (error) {
+            //     //do something about the error
+            // });
 
             helper.apex(component, "updateOpportunityCampaign", { opportunityId : opportunityId, campaignId: campaignId, campaignOwnerId: campaignOwnerId })
             .then(function (result) {
