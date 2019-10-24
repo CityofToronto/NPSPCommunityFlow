@@ -4,8 +4,6 @@ global class MonerisAsyncTxResponseHandler {
     @HttpPost
     global static void parseResponse() {
 
-        //Donation_Setings__c donationSettings = Donation_Setings__c.getOrgDefaults();
-
         try {
             // Tokens to retrieve from response message
             String mess = '';
@@ -31,7 +29,7 @@ global class MonerisAsyncTxResponseHandler {
             respIp = RestContext.request.remoteAddress;
             
             // Parse XML Response
-            system.debug('AsynchronousTransactionResponse :: parseResponse :: resp = ' + resp);
+            system.debug('MonerisAsyncTxReponseHandler :: parseResponse :: resp = ' + resp);
             DOM.Document xmlDOC = new DOM.Document();
             xmlDOC.load(resp);
             DOM.XMLNode rootElement = xmlDOC.getRootElement();
@@ -42,7 +40,7 @@ global class MonerisAsyncTxResponseHandler {
                     responseResultMap.put(keyName, xmlnodeobj.getText());
                 }
             }
-            system.debug('AsynchronousTransactionResponse :: parseResponse :: responseResultMap = ' + responseResultMap);
+            system.debug('MonerisAsyncTxReponseHandler :: parseResponse :: responseResultMap = ' + responseResultMap);
             
             /** CODE if decryption is needed 
             //Decrypt response order id to get payment id
@@ -92,10 +90,68 @@ global class MonerisAsyncTxResponseHandler {
             update opportunity;
   
         } catch (Exception ex) {
-            system.debug('AsynchronousTransactionResponse :: parseResponse :: ex = ' + ex);
+            system.debug('MonerisAsyncTxReponseHandler :: parseResponse :: ex = ' + ex);
         }
     }
 
+    public static String generateTaxReceiptNumber() {
+        Datetime today = Datetime.newInstance(Date.today().year(), Date.today().month(), Date.today().day());
+        String year = (String.valueOf(today.year())).substring(2, 4);
+        return generateTaxReceiptNumber(year, false);
+    }
+
+    public static String generateTaxReceiptNumber(String twoDigityear, boolean previousYear) {
+        Donation_Setings__c donationSettings = Donation_Setings__c.getOrgDefaults();
+        Integer taxRecieptNum = iterateReceiptNumber();
+        String taxNumStr = null;
+        // if(taxRecieptNum != null) {
+        //     String taxReceiptNumPad = (String.valueOf(taxRecieptNum).leftPad(donationSettings.Donation_Number_Number_of_Digits__c.intValue())).replace(' ','0');
+        //     taxNumStr = 'R-' + twoDigityear;
+        //     if(!previousYear) {
+        //         taxNumStr += 'A-' + taxReceiptNumPad;
+        //     }   else {
+        //         taxNumStr += 'B-' + taxReceiptNumPad;
+        //     }
+        // }
+        return taxNumStr;
+    }
+
+    /** 
+      * COT-1: Get a unique donation number using a lock on the select call to prevent race conditions
+      */
+    public static Integer iterateReceiptNumber() {
+        Decimal invoiceNumber = null;
+        integer numAttempts = 0;
+        
+        // Get a lock on a donation number to ensure its unique
+        // Max out after 8 attempts to stay under the 10 second cpu time limit
+        while (invoiceNumber == null && numAttempts <= 8) {
+            List<DMS_Settings__mdt> dmsSettings = [SELECT Tax_Receipt_Number__c FROM DMS_Settings__mdt WHERE Label='Production'];
+            
+            try {
+                dmsSettings[0].Tax_Receipt_Number__c = dmsSettings[0].Tax_Receipt_Number__c + 1;
+                system.debug('MonerisAsyncTxReponseHandler  :: iterateReceiptNumber :: using tax receipt no: =' + dmsSettings[0].Tax_Receipt_Number__c);
+                // Metadata.DeployContainer mdContainer = new Metadata.DeployContainer();
+                // mdContainer.addMetadata(dmsSettings[0]);
+                // CustomMetadataCallback callback = new CustomMetadataCallback();
+                // Id jobId = Metadata.Operations.enqueueDeployment(mdContainer, callback);
+
+                invoiceNumber = integer.valueof(dmsSettings[0].Tax_Receipt_Number__c);
+            }   catch (Exception ex) {  
+                // If the donation number is locked, set the number to null, sleep and try again
+                system.debug('MonerisAsyncTxReponseHandler  :: iterateReceiptNumber :: ex=' + ex);
+                invoiceNumber = null;
+                numAttempts++;
+
+                // Sleep for 1 seconds
+                sleep(1 * 950);   
+            }
+        }
+
+        system.debug('MonerisAsyncTxReponseHandler :: iterateReceiptNumber :: invoiceNumber=' + invoiceNumber);
+        return (invoiceNumber != null ? invoiceNumber.intValue() : null);
+    }
+    
     /**
       * COT-1: Sleep method to wait before trying to get another donation number with a lock
       */
@@ -106,5 +162,17 @@ global class MonerisAsyncTxResponseHandler {
             timeDiff = System.now().getTime() - startTime.getTime();
         }
         while (timeDiff <= milliSeconds);
+    }
+
+    public class CustomMetadataCallback implements Metadata.DeployCallback {
+        public void handleResult(Metadata.DeployResult result,
+                                Metadata.DeployCallbackContext context) {
+            if (result.status == Metadata.DeployStatus.Succeeded) {
+                System.debug('success: '+ result);
+            } else {
+                // Deployment was not successful
+                System.debug('fail: '+ result);
+            }
+        }
     }
 }
