@@ -22,7 +22,7 @@
                variant="neutral" onclick="{!c.onButtonPressed}" />
          </aura:if>
          <aura:if isTrue="{!v.canNext}">
-            <lightning:button aura:id="NEXT" label="Next" 
+            <lightning:button aura:id="NEXT" label="Continue" 
                variant="brand" onclick="{!c.onButtonPressed}" />
          </aura:if>
          <aura:if isTrue="{!v.canFinish}">

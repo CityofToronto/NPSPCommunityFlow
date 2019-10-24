@@ -10,7 +10,7 @@ global without sharing class NPSPFlowController {
 
         Map<String, DMS_Settings__mdt> dmsSettingsMap = getDMSSettings();
 
-        Blob cryptoKey = EncodingUtil.base64Decode(dmsSettingsMap.get('DEV').AES_Key_128__c);
+        Blob cryptoKey = EncodingUtil.base64Decode(dmsSettingsMap.get('Production').AES_Key_128__c);
         Blob data = Blob.valueOf(value);
         Blob encryptedData = Crypto.encryptWithManagedIV('AES128', cryptoKey, data);
 
@@ -58,6 +58,14 @@ global without sharing class NPSPFlowController {
         Opportunity opportunity = [SELECT Id FROM Opportunity WHERE Id =:opportunityId];
         opportunity.CampaignId = campaignId;
         opportunity.OwnerId = campaignOwnerId;
+
+        update opportunity;
+        return opportunity.Id;
+    }
+
+    public static String doNotAcknowledgeOpporunity(String opportunityId) {
+        Opportunity opportunity = [SELECT Id, npsp__Acknowledgment_Status__c FROM Opportunity WHERE Id =:opportunityId];
+        opportunity.npsp__Acknowledgment_Status__c = 'Email Acknowledgment Not Sent';
 
         update opportunity;
         return opportunity.Id;
