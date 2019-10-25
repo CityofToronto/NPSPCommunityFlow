@@ -59,7 +59,7 @@ global class MonerisAsyncTxResponseHandler {
             **/
 
             String paymentId = responseResultMap.get('response_order_id');
-            npe01__OppPayment__c payment = [SELECT Id, npe01__Opportunity__c FROM npe01__OppPayment__c WHERE Id =: paymentId];
+            npe01__OppPayment__c payment = [SELECT Id, npe01__Opportunity__c, npe01__Paid__c, npe01__Check_Reference_Number__c FROM npe01__OppPayment__c WHERE Id =: paymentId];
             
             //only update payment and opportunity if it hasn't already been paid
             if(!payment.npe01__Paid__c && payment.npe01__Check_Reference_Number__c == null) {
