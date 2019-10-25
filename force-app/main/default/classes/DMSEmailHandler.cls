@@ -1,17 +1,29 @@
 public without sharing class DMSEmailHandler {
 
     public static void sendEmail(String contactId, String opportunityId) {
+        List<Messaging.SingleEmailMessage> emailsToSend = new List<Messaging.SingleEmailMessage>();
         EmailTemplate thankYouTemplate = [select Id FROM EmailTemplate WHERE DeveloperName = 'DMSThankYouWithReceiptAttachment' limit 1];
 
-        Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
-        mail.setTemplateId(thankYouTemplate.Id);
-        mail.setTargetObjectId(contactId);
-        mail.setWhatId(opportunityId);
-
-        List<Messaging.SendEmailResult> results = Messaging.sendEmail(new Messaging.SingleEmailMessage[] { mail });
+        Messaging.SingleEmailMessage thankYouEmail = new Messaging.SingleEmailMessage();
+        thankYouEmail.setTemplateId(thankYouTemplate.Id);
+        thankYouEmail.setTargetObjectId(contactId);
+        thankYouEmail.setWhatId(opportunityId);
+        emailsToSend.add(thankYouEmail);
 		
-        Opportunity opportunity = [Select npsp__Acknowledgment_Status__c, npsp__Acknowledgment_Date__c from Opportunity where id =: opportunityId];
+        Opportunity opportunity = [Select npsp__Acknowledgment_Status__c, npsp__Acknowledgment_Date__c, Please_send_eCard__c from Opportunity where id =: opportunityId];
         
+        if(opportunity.Please_send_eCard__c) {
+            EmailTemplate eCardTemplate = [select Id FROM EmailTemplate WHERE DeveloperName = 'DMSECard' limit 1];
+
+            Messaging.SingleEmailMessage eCardEmail = new Messaging.SingleEmailMessage();
+            eCardEmail.setTemplateId(eCardTemplate.Id);
+            eCardEmail.setTargetObjectId(contactId);
+            eCardEmail.setWhatId(opportunityId);
+            emailsToSend.add(eCardEmail);
+        }
+
+        List<Messaging.SendEmailResult> results = Messaging.sendEmail(emailsToSend);
+
         if (results[0].success) {
             opportunity.npsp__Acknowledgment_Status__c = 'Acknowledged';
             opportunity.npsp__Acknowledgment_Date__c = System.now().date();
@@ -24,6 +36,7 @@ public without sharing class DMSEmailHandler {
         update opportunity;
     }
     
+    //DOES NOT CURRENTLY WORK
     private static Messaging.EmailFileAttachment getDMSTaxReceiptAttachment(String contactId, String opportunityId) {
         EmailTemplate taxTemplate = [select Id FROM EmailTemplate WHERE DeveloperName = 'DMSTaxReceipt' limit 1];
 		

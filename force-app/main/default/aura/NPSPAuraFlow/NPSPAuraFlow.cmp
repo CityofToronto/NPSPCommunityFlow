@@ -1,6 +1,6 @@
 <aura:component implements="forceCommunity:availableForAllPageTypes" access="global" controller="NPSPFlowController">
-    <aura:registerEvent name="appEvent" type="c:programSetEvent"/>
-    <aura:attribute name="dmsSettings" type="Map" />  
+    <aura:registerEvent name="appEvent" type="c:setProgramEvent"/>
+    <aura:attribute name="dmsSettings" type="DMS_Settings__c" />  
     <aura:handler name="init" value="{!this}" action="{!c.init}" />
 
     <a name="main"></a>
@@ -11,9 +11,9 @@
 
         <lightning:flow aura:id="flowData" onstatuschange="{!c.handleStatusChange}" />
         
-        <form name="paymentForm" aura:id="paymentForm" method="POST" action="{!v.dmsSettings.Production.Moneris_URL__c}">
-            <input type="hidden" name="ps_store_id" value="{!v.dmsSettings.Production.Moneris_Store_Id__c}" />
-            <input type="hidden" name="hpp_key" value="{!v.dmsSettings.Production.Moneris_HPP_Key__c}" />
+        <form name="paymentForm" aura:id="paymentForm" method="POST" action="{!v.dmsSettings.Moneris_URL__c}">
+            <input type="hidden" name="ps_store_id" value="{!v.dmsSettings.Moneris_Store_Id__c}" />
+            <input type="hidden" name="hpp_key" value="{!v.dmsSettings.Moneris_HPP_Key__c}" />
             <lightning:input aura:id="paymentAmount" class="slds-hide" type="hidden" name="charge_total" value="" />
             <!--MORE OPTIONAL VARIABLES CAN BE DEFINED HERE -->
             <!-- Merchant defined unique transaction identifier - must be unique for every transaction attempt. -->

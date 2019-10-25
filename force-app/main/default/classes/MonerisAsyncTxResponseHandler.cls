@@ -59,35 +59,42 @@ global class MonerisAsyncTxResponseHandler {
             **/
 
             String paymentId = responseResultMap.get('response_order_id');
-            String paymentAmount = responseResultMap.get('charge_total');
             npe01__OppPayment__c payment = [SELECT Id, npe01__Opportunity__c FROM npe01__OppPayment__c WHERE Id =: paymentId];
-            payment.npe01__Paid__c = false;
-            payment.npe01__Check_Reference_Number__c = responseResultMap.get('bank_transaction_id');
-            if(!String.isEmpty(paymentAmount)) {
-                payment.npe01__Payment_Amount__c = Decimal.valueOf(paymentAmount);
+            
+            //only update payment and opportunity if it hasn't already been paid
+            if(!payment.npe01__Paid__c && payment.npe01__Check_Reference_Number__c == null) {
+
+                payment.npe01__Check_Reference_Number__c = responseResultMap.get('bank_transaction_id');
+
+                String paymentAmount = responseResultMap.get('charge_total');
+                if(!String.isEmpty(paymentAmount)) {
+                    payment.npe01__Payment_Amount__c = Decimal.valueOf(paymentAmount);
+                }
+
+                Opportunity opportunity = [SELECT Id FROM Opportunity WHERE Id =: payment.npe01__Opportunity__c];
+
+                //check result code
+                String resultCode = responseResultMap.get('result');
+                payment.npe01__Custom_Payment_Field__c = responseResultMap.get('response_code');
+
+                if(resultCode == '1') { //APPROVED
+                    opportunity.StageName = 'Posted';
+                    opportunity.CloseDate = System.now().date();
+                    opportunity.Tax_Receipt_Number__c = generateTaxReceiptNumber();
+                    //Setting opportunity acknowledge status triggers email workflow automatically
+                    opportunity.npsp__Acknowledgment_Status__c = 'Email Acknowledgment Now'; 
+                    payment.npe01__Paid__c = true;
+                    payment.npe01__Payment_Date__c = System.now().date();
+                } else if(resultCode == '-1') { //CANCELLED
+                    opportunity.StageName = 'Withdrawn';
+                } else {  // resultCode == 0 FAILED
+                    opportunity.StageName = 'Withdrawn';
+                }
+
+                update payment;
+                update opportunity;
+
             }
-
-            Opportunity opportunity = [SELECT Id FROM Opportunity WHERE Id =: payment.npe01__Opportunity__c];
-
-            //check result code
-            String resultCode = responseResultMap.get('result');
-            payment.npe01__Custom_Payment_Field__c = responseResultMap.get('response_code');
-
-            if(resultCode == '1') { //APPROVED
-                opportunity.StageName = 'Posted';
-                opportunity.CloseDate = System.now().date();
-                //Setting opportunity acknowledge status triggers email workflow automatically
-                opportunity.npsp__Acknowledgment_Status__c = 'Email Acknowledgment Now'; 
-                payment.npe01__Paid__c = true;
-                payment.npe01__Payment_Date__c = System.now().date();
-            } else if(resultCode == '-1') { //CANCELLED
-                opportunity.StageName = 'Withdrawn';
-            } else {  // resultCode == 0 FAILED
-                opportunity.StageName = 'Withdrawn';
-            }
-
-            update payment;
-            update opportunity;
   
         } catch (Exception ex) {
             system.debug('MonerisAsyncTxReponseHandler :: parseResponse :: ex = ' + ex);
@@ -101,42 +108,36 @@ global class MonerisAsyncTxResponseHandler {
     }
 
     public static String generateTaxReceiptNumber(String twoDigityear, boolean previousYear) {
-        Donation_Setings__c donationSettings = Donation_Setings__c.getOrgDefaults();
         Integer taxRecieptNum = iterateReceiptNumber();
         String taxNumStr = null;
-        // if(taxRecieptNum != null) {
-        //     String taxReceiptNumPad = (String.valueOf(taxRecieptNum).leftPad(donationSettings.Donation_Number_Number_of_Digits__c.intValue())).replace(' ','0');
-        //     taxNumStr = 'R-' + twoDigityear;
-        //     if(!previousYear) {
-        //         taxNumStr += 'A-' + taxReceiptNumPad;
-        //     }   else {
-        //         taxNumStr += 'B-' + taxReceiptNumPad;
-        //     }
-        // }
+        if(taxRecieptNum != null) {
+            String taxReceiptNumPad = (String.valueOf(taxRecieptNum).leftPad(5)).replace(' ','0');
+            taxNumStr = 'R-' + twoDigityear;
+            if(!previousYear) {
+                taxNumStr += 'A-' + taxReceiptNumPad;
+            }   else {
+                taxNumStr += 'B-' + taxReceiptNumPad;
+            }
+        }
         return taxNumStr;
     }
 
     /** 
       * COT-1: Get a unique donation number using a lock on the select call to prevent race conditions
       */
-    public static Integer iterateReceiptNumber() {
+    private static Integer iterateReceiptNumber() {
         Decimal invoiceNumber = null;
         integer numAttempts = 0;
         
         // Get a lock on a donation number to ensure its unique
         // Max out after 8 attempts to stay under the 10 second cpu time limit
         while (invoiceNumber == null && numAttempts <= 8) {
-            List<DMS_Settings__mdt> dmsSettings = [SELECT Tax_Receipt_Number__c FROM DMS_Settings__mdt WHERE Label='Production'];
             
             try {
-                dmsSettings[0].Tax_Receipt_Number__c = dmsSettings[0].Tax_Receipt_Number__c + 1;
-                system.debug('MonerisAsyncTxReponseHandler  :: iterateReceiptNumber :: using tax receipt no: =' + dmsSettings[0].Tax_Receipt_Number__c);
-                // Metadata.DeployContainer mdContainer = new Metadata.DeployContainer();
-                // mdContainer.addMetadata(dmsSettings[0]);
-                // CustomMetadataCallback callback = new CustomMetadataCallback();
-                // Id jobId = Metadata.Operations.enqueueDeployment(mdContainer, callback);
-
-                invoiceNumber = integer.valueof(dmsSettings[0].Tax_Receipt_Number__c);
+                DMS_Settings__c dmsSettings = DMS_Settings__c.getOrgDefaults();
+                dmsSettings.Donation_Number__c = dmsSettings.Donation_Number__c + 1;
+                update dmsSettings;
+                invoiceNumber = dmsSettings.Donation_Number__c;
             }   catch (Exception ex) {  
                 // If the donation number is locked, set the number to null, sleep and try again
                 system.debug('MonerisAsyncTxReponseHandler  :: iterateReceiptNumber :: ex=' + ex);
@@ -162,17 +163,5 @@ global class MonerisAsyncTxResponseHandler {
             timeDiff = System.now().getTime() - startTime.getTime();
         }
         while (timeDiff <= milliSeconds);
-    }
-
-    public class CustomMetadataCallback implements Metadata.DeployCallback {
-        public void handleResult(Metadata.DeployResult result,
-                                Metadata.DeployCallbackContext context) {
-            if (result.status == Metadata.DeployStatus.Succeeded) {
-                System.debug('success: '+ result);
-            } else {
-                // Deployment was not successful
-                System.debug('fail: '+ result);
-            }
-        }
     }
 }

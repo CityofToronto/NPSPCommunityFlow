@@ -5,6 +5,7 @@ global without sharing class NPSPFlowController {
         return result;
     }
 
+    /*
     @AuraEnabled
     public static String encryptData(String value) {
 
@@ -15,18 +16,11 @@ global without sharing class NPSPFlowController {
         Blob encryptedData = Crypto.encryptWithManagedIV('AES128', cryptoKey, data);
 
         return EncodingUtil.base64Encode(encryptedData);
-    }
+    }*/
 
     @AuraEnabled
-    public static Map<String, DMS_Settings__mdt> getDMSSettings() {
-        DMS_Settings__mdt[] dmsSettings = [SELECT Label, AES_Key_128__c, Moneris_HPP_Key__c, Moneris_Store_Id__c, Moneris_URL__c, Flow_Name__c FROM DMS_Settings__mdt];
-        Map<String, DMS_Settings__mdt> dmsSettingsMap = new Map<String, DMS_Settings__mdt>();
-
-        for(DMS_Settings__mdt settings : dmsSettings) {
-            dmsSettingsMap.put(settings.Label, settings);
-        }
-
-        return dmsSettingsMap;
+    public static DMS_Settings__c getDMSSettings(){
+        return DMS_Settings__c.getOrgDefaults();
     }
 
     @AuraEnabled
