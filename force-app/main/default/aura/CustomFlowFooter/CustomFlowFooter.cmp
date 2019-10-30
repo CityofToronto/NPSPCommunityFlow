@@ -5,7 +5,10 @@
    <aura:attribute name="canBack" type="Boolean" />
    <aura:attribute name="canNext" type="Boolean" />
    <aura:attribute name="canFinish" type="Boolean" />
+   <aura:attribute name="isDisabled" type="Boolean" default="true" />
+
    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+   <aura:handler event="c:SetProgramEvent" action="{!c.handleApplicationEvent}"/>
         
    <div aura:id="actionButtonBar" class="slds-clearfix slds-p-top_small">
       <!-- If Previous is available, display to the left -->
@@ -23,11 +26,11 @@
          </aura:if>
          <aura:if isTrue="{!v.canNext}">
             <lightning:button aura:id="NEXT" label="Continue" 
-               variant="brand" onclick="{!c.onButtonPressed}" />
+               variant="brand" disabled="{!v.isDisabled}" onclick="{!c.onButtonPressed}" />
          </aura:if>
          <aura:if isTrue="{!v.canFinish}">
             <lightning:button aura:id="FINISH" label="Done"
-               variant="brand" onclick="{!c.onButtonPressed}" />
+               variant="brand" disabled="{!v.isDisabled}" onclick="{!c.onButtonPressed}" />
          </aura:if>
       </div>
    </div>

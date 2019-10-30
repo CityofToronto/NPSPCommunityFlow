@@ -21,5 +21,15 @@
       // Fire that action
       var navigate = cmp.get('v.navigateFlow');
       navigate(actionClicked);
+   },
+
+   handleApplicationEvent : function(cmp, event, helper) {
+      var message = event.getParam("programId");
+      let disable = true;
+
+      if(message === 'Unlock')
+         disable = false;
+   
+      cmp.set('v.isDisabled', disable);  
    }
  })
