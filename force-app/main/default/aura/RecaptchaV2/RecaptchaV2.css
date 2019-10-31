@@ -1,13 +1,19 @@
-.THIS iframe {
-    height:120px !important;
-    width: 100%;
-    overflow:hidden;
-    overflow-y: hidden; 
-    overflow-x: hidden; 
-    border: 0px;
-    top:0;
-}
-
 .THIS iframe::-webkit-scrollbar {  
     display: none;
+}
+
+.THIS.reCaptcha {
+    border:0;
+    top:0;
+    overflow:hidden;
+}
+
+.THIS.reCaptchaSmall {
+    height:79px;
+    width:310px;
+}
+
+.THIS.reCaptchaBig {
+    height: 500px;
+    width:310px;
 }

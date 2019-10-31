@@ -13,6 +13,14 @@
             cmp.set("v.canFinish", true);
          }
       }
+
+      window.addEventListener("message", function(event) {
+      	if(event.data.action && event.data.action == 'Unlock') {
+      		cmp.set('v.isDisabled', false);  
+         } else if(event.data.action && event.data.action == 'Lock') {
+        	   cmp.set('v.isDisabled', true); 
+         }
+      }, false);
     },
          
    onButtonPressed: function(cmp, event, helper) {
@@ -21,15 +29,5 @@
       // Fire that action
       var navigate = cmp.get('v.navigateFlow');
       navigate(actionClicked);
-   },
-
-   handleApplicationEvent : function(cmp, event, helper) {
-      var message = event.getParam("programId");
-      let disable = true;
-
-      if(message === 'Unlock')
-         disable = false;
-   
-      cmp.set('v.isDisabled', disable);  
    }
  })
