@@ -1,36 +1,42 @@
 public without sharing class DMSEmailHandler {
 
     public static void sendEmail(String contactId, String opportunityId) {
-        List<Messaging.SingleEmailMessage> emailsToSend = new List<Messaging.SingleEmailMessage>();
-        EmailTemplate thankYouTemplate = [select Id FROM EmailTemplate WHERE DeveloperName = 'DMSThankYouWithReceiptAttachment' limit 1];
-
-        Messaging.SingleEmailMessage thankYouEmail = new Messaging.SingleEmailMessage();
-        thankYouEmail.setTemplateId(thankYouTemplate.Id);
-        thankYouEmail.setTargetObjectId(contactId);
-        thankYouEmail.setWhatId(opportunityId);
-        emailsToSend.add(thankYouEmail);
+        DMS_Settings__c dmsSettings = DMS_Settings__c.getOrgDefaults();
 		
         Opportunity opportunity = [Select npsp__Acknowledgment_Status__c, npsp__Acknowledgment_Date__c, Please_send_eCard__c from Opportunity where id =: opportunityId];
-        
-        if(opportunity.Please_send_eCard__c) {
-            EmailTemplate eCardTemplate = [select Id FROM EmailTemplate WHERE DeveloperName = 'DMSECard' limit 1];
+        opportunity.npsp__Acknowledgment_Status__c = 'Email Acknowledgment Not Sent';
 
-            Messaging.SingleEmailMessage eCardEmail = new Messaging.SingleEmailMessage();
-            eCardEmail.setTemplateId(eCardTemplate.Id);
-            eCardEmail.setTargetObjectId(contactId);
-            eCardEmail.setWhatId(opportunityId);
-            emailsToSend.add(eCardEmail);
-        }
+        if(!dmsSettings.Disable_Email__c) {
+            
+            List<Messaging.SingleEmailMessage> emailsToSend = new List<Messaging.SingleEmailMessage>();
+            EmailTemplate thankYouTemplate = [select Id FROM EmailTemplate WHERE DeveloperName = 'DMSThankYouWithReceiptAttachment' limit 1];
 
-        List<Messaging.SendEmailResult> results = Messaging.sendEmail(emailsToSend);
+            Messaging.SingleEmailMessage thankYouEmail = new Messaging.SingleEmailMessage();
+            thankYouEmail.setTemplateId(thankYouTemplate.Id);
+            thankYouEmail.setTargetObjectId(contactId);
+            thankYouEmail.setWhatId(opportunityId);
+            emailsToSend.add(thankYouEmail);
 
-        if (results[0].success) {
-            opportunity.npsp__Acknowledgment_Status__c = 'Acknowledged';
-            opportunity.npsp__Acknowledgment_Date__c = System.now().date();
-            system.debug(results);
-        } else {
-            opportunity.npsp__Acknowledgment_Status__c = 'Email Acknowledgment Not Sent';
-            system.debug('DMS mail send error: ' + results);
+            if(opportunity.Please_send_eCard__c) {
+                EmailTemplate eCardTemplate = [select Id FROM EmailTemplate WHERE DeveloperName = 'DMSECard' limit 1];
+
+                Messaging.SingleEmailMessage eCardEmail = new Messaging.SingleEmailMessage();
+                eCardEmail.setTemplateId(eCardTemplate.Id);
+                eCardEmail.setTargetObjectId(contactId);
+                eCardEmail.setWhatId(opportunityId);
+                emailsToSend.add(eCardEmail);
+            }
+
+            List<Messaging.SendEmailResult> results = Messaging.sendEmail(emailsToSend);
+
+            if (results[0].success) {
+                opportunity.npsp__Acknowledgment_Status__c = 'Acknowledged';
+                opportunity.npsp__Acknowledgment_Date__c = System.now().date();
+                system.debug(results);
+            } else {
+                system.debug('DMSEmailHandler error: ' + results);
+            }
+
         }
         
         update opportunity;

@@ -85,7 +85,9 @@
             }
 
             //Submit form to Moneris
-            component.find("paymentForm").getElement().submit();
+            if(opportunityId !== null) {
+                component.find("paymentForm").getElement().submit();
+            }
         }
      }
 })
