@@ -50,13 +50,7 @@
             var campaignId = formResults.selectedProgramId.value;
             var campaignOwnerId = formResults.campaignRecordOwnerId.value;
 
-            // helper.apex(component, "createOpportunityContactRole", { contactId : contactId, opportunityId: opportunityId })
-            // .then(function (result) {
-
-            // }).catch(function (error) {
-            //     //do something about the error
-            // });
-
+            //changes owner of opportunity campaign and opportunity owner to the owner of the campaign
             helper.apex(component, "updateOpportunityCampaign", { opportunityId : opportunityId, campaignId: campaignId, campaignOwnerId: campaignOwnerId })
             .then(function (result) {
 
@@ -64,8 +58,20 @@
                 //do something about the error
             });
 
+            //update Account name if needed i.e. address change
+            var accountName = formResults.UpdateAccountName.value;
+            var accountId = formResults.accountIdOfExistingContact.value;
+            if(accountName && accountName.length > 0) {
+                helper.apex(component, "updateAccountName", { accountId:accountId, accountName:accountName })
+                .then(function (result) {
+
+                }).catch(function (error) {
+                    //do something about the error
+                });
+            }
+
+            //update existing contact if needed
             var homePhone = formResults.UpdateContactHomePhone.value;
-            
             if(homePhone && homePhone.length > 0) {
                 var mobilePhone = formResults.UpdateContactMobilePhone.value; 
                 var mailingCity = formResults.UpdateContactMailingCity.value; 
@@ -84,9 +90,11 @@
                 });
             }
 
-            //Submit form to Moneris
+            //Submit form to Moneris only if an opporunity was created
             if(opportunityId !== null) {
                 component.find("paymentForm").getElement().submit();
+            } else {
+                $A.util.removeClass(component.find("errorMessage"), "hidden");
             }
         }
      }

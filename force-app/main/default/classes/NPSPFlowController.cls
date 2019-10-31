@@ -57,6 +57,15 @@ global without sharing class NPSPFlowController {
         return opportunity.Id;
     }
 
+    @AuraEnabled
+    public static String updateAccountName(String accountId, String accountName) {
+        Account account = [SELECT Id FROM Account WHERE Id =:accountId];
+        account.Name = accountName;
+
+        update account;
+        return account.Id;
+    }
+
     public static String doNotAcknowledgeOpporunity(String opportunityId) {
         Opportunity opportunity = [SELECT Id, npsp__Acknowledgment_Status__c FROM Opportunity WHERE Id =:opportunityId];
         opportunity.npsp__Acknowledgment_Status__c = 'Email Acknowledgment Not Sent';
