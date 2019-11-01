@@ -1,9 +1,9 @@
 <aura:component access="global" implements="lightning:availableForFlowScreens" controller="InitiativeProgramController">
 
-    <aura:attribute name="initiatives" type="List" />  
-    <aura:attribute name="initiativeIdSelected" type="String" access="global"/>  
+    <aura:attribute name="initiativeIdSelected" type="String" access="global"/>
+    <aura:attribute name="programIdSelected" type="String" access="global"/>
+    <aura:attribute name="initiatives" type="List" />
     <aura:attribute name="programs" type="List" />
-    <aura:attribute name="programIdSelected" type="String" access="global"/>     
     <aura:handler name="init" value="{!this}" action="{!c.init}" />
 
     <aura:handler event="c:SetProgramEvent" action="{!c.handleApplicationEvent}"/>
@@ -11,18 +11,18 @@
     <!--Declare the validation attribute so it can store the validation logic.--> 
     <aura:attribute name="validate" type="Aura.Action"/> 
 
-    <lightning:select name="initiative" label="Initiative" aura:id="initiativeSelect" required="true" class="flowruntimeInputWrapper" onchange="{! c.onChangeInitiative }">
+    <lightning:select name="initiative" label="Initiative" aura:id="initiativeSelect" required="true" class="slds-m-bottom_medium" onchange="{! c.onChangeInitiative }">
         <option value=""></option>
         <aura:iteration items="{!v.initiatives}" var="option">
             <option text="{!option.Name}" value="{!option.Id}" selected="{!option.Id==v.initiativeSelected}" />
         </aura:iteration>
     </lightning:select>
 
-    <lightning:select name="program" label="Program" aura:id="programSelect" required="true" class="flowruntimeInputWrapper" onchange="{! c.onChangeProgram }">
+    <lightning:select name="program" label="Program" aura:id="programSelect" required="true" class="slds-m-bottom_medium" onchange="{! c.onChangeProgram }">
         <option value=""></option>
         <aura:iteration items="{!v.programs}" var="option">
             <option text="{!option.Name}" value="{!option.Id}" selected="{!option.Id==v.programSelected}" />
         </aura:iteration>
     </lightning:select>
 
-</aura:component>	
+</aura:component>

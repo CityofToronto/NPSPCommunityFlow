@@ -1,0 +1,4 @@
+<design:component label="Donation Amounts Radio Group">
+    <design:attribute name="donationAmount" label="Donation Amount" />
+
+</design:component>
