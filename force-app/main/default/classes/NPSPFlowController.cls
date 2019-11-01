@@ -17,6 +17,17 @@ global without sharing class NPSPFlowController {
 
         return EncodingUtil.base64Encode(encryptedData);
     }*/
+    @AuraEnabled
+    public static Map<String, DMS_Donation_Amounts__mdt> getDonationAmounts() {
+        DMS_Donation_Amounts__mdt[] donationAmounts = [SELECT Label__c, Amount__c, Program_Name__c, Sort_Order__c FROM DMS_Donation_Amounts__mdt ORDER BY Sort_Order__c, Amount__c ASC];
+        Map<String, DMS_Donation_Amounts__mdt> dmsDonationAmountsMap = new Map<String, DMS_Donation_Amounts__mdt>();
+
+        for(DMS_Donation_Amounts__mdt amount : donationAmounts) {
+            dmsDonationAmountsMap.put(amount.Label__c, amount);
+        }
+
+        return dmsDonationAmountsMap;
+    }
 
     @AuraEnabled
     public static DMS_Settings__c getDMSSettings(){

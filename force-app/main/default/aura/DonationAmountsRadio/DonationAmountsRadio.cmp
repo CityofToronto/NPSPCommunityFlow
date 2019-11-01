@@ -1,6 +1,7 @@
 <aura:component access="global" implements="lightning:availableForFlowScreens" controller="NPSPFlowController">
         <aura:handler name="init" value="{!this}" action="{!c.init}" />
-        <aura:attribute name="dmsSettings" type="DMS_Settings__c" />  
+        <aura:attribute name="dmsSettings" type="DMS_Settings__c" />
+        <aura:attribute name="donationAmountsMap" type="Map" />    
         <aura:attribute name="donationAmounts" type="List" />   
         <aura:attribute name="donationAmount" type="Decimal" access="global"/>  
 
@@ -18,11 +19,11 @@
                           required="true"/>
 
         <lightning:input aura:id="otherAmount" type="number" name="otherAmount" label="Enter a dollar amount" step="0.01" 
-        min="{!v.dmsSettings.Minimum_Donation_Amount__c}" max="{!v.dmsSettings.Maximum_Donation_Amount__c}" class="slds-hide" 
-        messageWhenRangeUnderflow="Minimum donation amount is $1"
-        messageWhenRangeOverflow="Maximum donation amount is $50,000"
-        messageWhenStepMismatch="Donation amount should have no more than 2 decimal places"
-        messageWhenBadInput="Please enter a number for your donation amount"
-        onchange="{! c.handleOtherAmountChange }" />
+            min="{!v.dmsSettings.Minimum_Donation_Amount__c}" max="{!v.dmsSettings.Maximum_Donation_Amount__c}" class="slds-hide" 
+            messageWhenRangeUnderflow="Minimum donation amount is $1"
+            messageWhenRangeOverflow="Maximum donation amount is $50,000"
+            messageWhenStepMismatch="Donation amount should have no more than 2 decimal places"
+            messageWhenBadInput="Please enter a number for your donation amount"
+            onchange="{! c.handleOtherAmountChange }" />
         </div>
 </aura:component>	

@@ -3,8 +3,22 @@
         helper.apex(cmp, "getDMSSettings", {})
         .then(function (results) {
             cmp.set('v.dmsSettings', results);
-            var jsonStr = JSON.stringify(eval(results.Donation_Amounts__c));
-            cmp.set('v.donationAmounts', JSON.parse(jsonStr));
+
+        }).catch(function (error) {
+            console.log(error);
+            //do something about the error
+        });
+
+        helper.apex(cmp, "getDonationAmounts", {})
+        .then(function (results) {
+            cmp.set('v.donationAmountsMap', results);
+            var amounts = [];
+            for(var label in results) {
+                if(results.hasOwnProperty(label))
+                    amounts.push({'label':label, 'value':results[label].Amount__c})
+            }
+
+            cmp.set('v.donationAmounts', amounts);
 
             if(sessionStorage) {
                 if(sessionStorage.getItem('donationAmount')) {
@@ -47,6 +61,8 @@
     handleAmountChange: function (cmp, event) {
         var changeValue = event.getParam("value");
         var otherTextField = cmp.find('otherAmount');
+
+        var donationsAmountsMap = cmp.get("v.donationAmountsMap");
 
         if(changeValue === 'Other') {
             $A.util.removeClass(otherTextField, 'slds-hide');
