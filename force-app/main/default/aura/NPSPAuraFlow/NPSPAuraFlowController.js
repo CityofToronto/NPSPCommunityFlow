@@ -42,7 +42,7 @@
         }
 
         if(event.getParam("status") === "FINISHED") {
-            component.find("paymentAmount").set("v.value", formResults.Donation_Amount_Value.value.toFixed(2));
+            component.find("paymentAmount").set("v.value", formResults.DonationAmountNumber.value.toFixed(2));
             component.find("orderId").set("v.value", formResults.savedPaymentId.value);
 
             var contactId = formResults.existingContactId.value;
@@ -73,16 +73,20 @@
             //update existing contact if needed
             var homePhone = formResults.UpdateContactHomePhone.value;
             if(homePhone && homePhone.length > 0) {
-                var mobilePhone = formResults.UpdateContactMobilePhone.value; 
-                var mailingCity = formResults.UpdateContactMailingCity.value; 
-                var mailingCountry = formResults.UpdateContactMailingCountry.value; 
-                var mailingPostalCode = formResults.UpdateContactMailingPostalCode.value; 
-                var mailingState = formResults.UpdateContactMailingState.value;
-                var mailingStreet = formResults.UpdateContactMailingStreet.value;
+                var contact = {};
+                contact.Id = contactId;
+                contact.HomePhone = homePhone;
+                contact.MobilePhone = formResults.UpdateContactMobilePhone.value; 
+                contact.MailingCity = formResults.UpdateContactMailingCity.value; 
+                contact.MailingCountry = formResults.UpdateContactMailingCountry.value; 
+                contact.MailingPostalCode = formResults.UpdateContactMailingPostalCode.value; 
+                contact.MailingState = formResults.UpdateContactMailingState.value;
+                contact.MailingStreet = formResults.UpdateContactMailingStreet.value;
+                contact.Preferred_Contact_Method__c = formResults.UpdateContactPreferredContactMethod.value;
+                contact.Legacy_Giving__c = formResults.UpdateContactLegacyGiving.value;
+                contact.Company__c = formResults.UpdateContactCompany.value;
 
-                helper.apex(component, "updateExistingContact", { contactId:contactId,homePhone:homePhone,mobilePhone:mobilePhone,
-                    mailingCity:mailingCity,mailingCountry:mailingCountry,mailingPostalCode:mailingPostalCode,
-                    mailingState:mailingState,mailingStreet:mailingStreet })
+                helper.apex(component, "updateExistingContact", { oContact : JSON.stringify(contact) })
                 .then(function (result) {
 
                 }).catch(function (error) {

@@ -17,6 +17,7 @@ global without sharing class NPSPFlowController {
 
         return EncodingUtil.base64Encode(encryptedData);
     }*/
+
     @AuraEnabled
     public static Map<String, DMS_Donation_Amounts__mdt> getDonationAmounts() {
         DMS_Donation_Amounts__mdt[] donationAmounts = [SELECT Label__c, Amount__c, Program_Name__c, Sort_Order__c FROM DMS_Donation_Amounts__mdt ORDER BY Sort_Order__c, Amount__c ASC];
@@ -42,17 +43,20 @@ global without sharing class NPSPFlowController {
     }
 
     @AuraEnabled
-    public static String updateExistingContact(String contactId, String homePhone, String mobilePhone, String mailingCity, 
-                            String mailingCountry, String mailingPostalCode, String mailingState, String mailingStreet) {
+    public static String updateExistingContact(String oContact) {
+        Contact contactUpdate = (Contact)JSON.deserialize(oContact, Contact.class);
         
-        Contact contact = [SELECT Id FROM Contact WHERE Id =:contactId];
-        contact.HomePhone = homePhone;
-        contact.MobilePhone = mobilePhone;
-        contact.MailingCity = mailingCity;
-        contact.MailingCountry = mailingCountry;
-        contact.MailingPostalCode = mailingPostalCode;
-        contact.MailingState = mailingState;
-        contact.MailingStreet = mailingStreet;
+        Contact contact = [SELECT Id FROM Contact WHERE Id =: contactUpdate.Id];
+        contact.HomePhone = contactUpdate.HomePhone;
+        contact.MobilePhone = contactUpdate.MobilePhone;
+        contact.MailingCity = contactUpdate.MailingCity;
+        contact.MailingCountry = contactUpdate.MailingCountry;
+        contact.MailingPostalCode = contactUpdate.MailingPostalCode;
+        contact.MailingState = contactUpdate.MailingState;
+        contact.MailingStreet = contactUpdate.MailingStreet;
+        contact.Preferred_Contact_Method__c = contactUpdate.Preferred_Contact_Method__c;
+        contact.Legacy_Giving__c = contactUpdate.Legacy_Giving__c;
+        contact.Company__c = contactUpdate.Company__c;
 
         update contact;
         return contact.Id;

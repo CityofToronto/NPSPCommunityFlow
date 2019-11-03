@@ -1,3 +1,4 @@
 <aura:event type="APPLICATION" description="Event template">
     <aura:attribute name="programId" type="String" />
+    <aura:attribute name="programName" type="String" />
 </aura:event>

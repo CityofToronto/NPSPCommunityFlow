@@ -15,7 +15,11 @@
             var amounts = [];
             for(var label in results) {
                 if(results.hasOwnProperty(label))
-                    amounts.push({'label':label, 'value':results[label].Amount__c})
+                    var value = results[label].Amount__c;
+                    if(results[label].Program_Name__c)
+                        value += '|'+results[label].Program_Name__c;
+
+                    amounts.push({'label':label, 'value':value})
             }
 
             cmp.set('v.donationAmounts', amounts);
@@ -28,6 +32,8 @@
                         $A.util.removeClass(cmp.find('otherAmount'), 'slds-hide');
                         cmp.find('otherAmount').set('v.value',sessionStorage.getItem('donationAmount'));
                     }
+
+                    cmp.set('v.donationAmount', sessionStorage.getItem('donationAmount'));
                 }
             }
 
@@ -58,19 +64,21 @@
         });
     },
 
-    handleAmountChange: function (cmp, event) {
-        var changeValue = event.getParam("value");
+    handleAmountChange: function (cmp, event, helper) {
+        var changeValue = event.getParam("value").split("|");
         var otherTextField = cmp.find('otherAmount');
 
         var donationsAmountsMap = cmp.get("v.donationAmountsMap");
 
-        if(changeValue === 'Other') {
+        if(changeValue[0] === 'Other') {
             $A.util.removeClass(otherTextField, 'slds-hide');
-        } else if(changeValue === '') {
-
         } else {
             $A.util.addClass(otherTextField, 'slds-hide');
-            cmp.set('v.donationAmount', Number(changeValue));
+            cmp.set('v.donationAmount', Number(changeValue[0]));
+        }
+
+        if(changeValue[1]) {
+            helper.fireSetProgramEvent(changeValue[1]);
         }
     },
 

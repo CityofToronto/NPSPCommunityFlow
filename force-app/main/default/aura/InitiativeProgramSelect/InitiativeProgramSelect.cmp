@@ -1,7 +1,11 @@
 <aura:component access="global" implements="lightning:availableForFlowScreens" controller="InitiativeProgramController">
 
     <aura:attribute name="initiativeIdSelected" type="String" access="global"/>
+    <aura:attribute name="initiativeSelected" type="String" />
+    <aura:handler name="change" value="{!v.initiativeIdSelected}" action="{!c.onChangeInitiative}"/>
+
     <aura:attribute name="programIdSelected" type="String" access="global"/>
+    <aura:attribute name="programSelected" type="String"/>
     <aura:attribute name="initiatives" type="List" />
     <aura:attribute name="programs" type="List" />
     <aura:handler name="init" value="{!this}" action="{!c.init}" />
