@@ -1,6 +1,4 @@
 ({
-    settingsObj: {},
-
     apex: function(cmp, method, params) {
         return new Promise(function (resolve, reject) {
             var action = cmp.get("c." + method);
