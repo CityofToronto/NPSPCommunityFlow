@@ -14,9 +14,13 @@
          }
       }
 
+      //recaptcha callback message
       window.addEventListener("message", function(event) {
       	if(event.data.action && event.data.action == 'unlock') {
-      		cmp.set('v.isDisabled', false);  
+            cmp.set('v.isDisabled', false);  
+
+            var navigate = cmp.get('v.navigateFlow');
+            navigate(cmp.get('v.actionClicked'));
          } else if(event.data.action && event.data.action == 'lock') {
         	   cmp.set('v.isDisabled', true); 
          }
@@ -26,8 +30,17 @@
    onButtonPressed: function(cmp, event, helper) {
       // Figure out which action was called
       var actionClicked = event.getSource().getLocalId();
-      // Fire that action
-      var navigate = cmp.get('v.navigateFlow');
-      navigate(actionClicked);
+      // Figure out which action was called, save the action for after recaptcha check
+      cmp.set('v.actionClicked', actionClicked);
+
+      //execute captcha check
+      if(document.getElementById("recaptchaIframe")) {
+         let vfOrigin = location.protocol + '//' + location.hostname;
+         var recaptchaIFrame = document.getElementById("recaptchaIframe").contentWindow;
+         recaptchaIFrame.postMessage({action: 'execute'}, vfOrigin);
+      } else {
+         var navigate = cmp.get('v.navigateFlow');
+         navigate(actionClicked);
+      }
    }
  })

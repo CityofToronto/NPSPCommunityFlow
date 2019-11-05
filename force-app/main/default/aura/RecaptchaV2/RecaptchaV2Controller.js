@@ -15,15 +15,17 @@
             // }
 
             if(event.data.action === 'verify') {
-                console.log(event.data.token);
                 helper.apex(component, "verify", {token: event.data.token})
                 .then(function (results) {                        
                     var oResults = JSON.parse(results);
-                    console.log(oResults);
 
-                    if(oResults && oResults.success == true && oResults.score >= 0.7) {
-                        //check results and figure out what to do
-                        parent.postMessage({action: 'unlock'}, vfOrigin);
+                    if(oResults && oResults.success) {
+                        if(oResults.success == true && oResults.score >= 0.7) {
+                            //check results and figure out what to do
+                            parent.postMessage({action: 'unlock'}, vfOrigin);
+                        } else {
+                            parent.postMessage({action: 'lock'}, vfOrigin);
+                        }
                     }
                 })
             }

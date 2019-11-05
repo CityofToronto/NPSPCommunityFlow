@@ -4,11 +4,9 @@
         .then(function (result) {
             cmp.set('v.initiatives', result);
 
-            if(sessionStorage) {
-                if(sessionStorage.getItem('initiativeSelect')) {
-                    cmp.set('v.initiativeSelected', sessionStorage.getItem('initiativeSelect'));
-                    cmp.find('initiativeSelect').set('v.value',sessionStorage.getItem('initiativeSelect'));
-                }
+            if(sessionStorage && sessionStorage.getItem('initiativeSelect')) {
+                cmp.set('v.initiativeSelected', sessionStorage.getItem('initiativeSelect'));
+                cmp.find('initiativeSelect').set('v.value',sessionStorage.getItem('initiativeSelect'));
             }
 
             $A.enqueueAction(cmp.get('c.onChangeInitiative'));
@@ -40,18 +38,16 @@
         var parentId = cmp.find('initiativeSelect').get('v.value');
 
         helper.apex(cmp, "getAllActiveProgramsByParentId", {parentId : parentId})
-        .then(function (result) {
+        .then($A.getCallback(function (result) {
             cmp.set('v.programs', result);
 
-            if(sessionStorage) {
-                if(sessionStorage.getItem('programSelect')) {
-                    cmp.set('v.programSelected', sessionStorage.getItem('programSelect'));
-                    cmp.find('programSelect').set('v.value',sessionStorage.getItem('programSelect'));
-                }
+            if(sessionStorage && sessionStorage.getItem('programSelect')) {
+                cmp.set('v.programSelected', sessionStorage.getItem('programSelect'));
+                cmp.find('programSelect').set('v.value',sessionStorage.getItem('programSelect'));
             }
 
             return;
-        }).catch(function (error) {
+        })).catch(function (error) {
             return;
             //do something about the error
         });
@@ -62,23 +58,26 @@
         var programName = event.getParam("programName");
         var changeInitiativeAction = cmp.get("c.onChangeInitiative");
         if(programName) {
+            if(sessionStorage)
+            	sessionStorage.clear();
             helper.apex(cmp, "getCampaignByProgramName", {programName : programName})
-            .then(function (result) {
+            .then($A.getCallback(function (result) {
                 cmp.find('initiativeSelect').set('v.value',result.ParentId);
                 cmp.set('v.initiativeIdSelected', result.ParentId);
 
                 changeInitiativeAction.setCallback(this, function(response) {
+                    cmp.set('v.isDisabled', true);
                     setTimeout(function () {
                         cmp.find('programSelect').set('v.value',result.Id);
                     }, 800);
                 });
                 $A.enqueueAction(changeInitiativeAction);
-            }).catch(function (error) {
+            })).catch(function (error) {
                 //do something about the error
             });
-        } else {
+        } else if(programId) {
             helper.apex(cmp, "getParentIdByProgramId", {programId : programId})
-            .then(function (result) {
+            .then($A.getCallback(function (result) {
                 cmp.find('initiativeSelect').set('v.value',result);
                 changeInitiativeAction.setCallback(this, function(response) {
                     setTimeout(function () {
@@ -86,9 +85,11 @@
                     }, 800);
                 });
                 $A.enqueueAction(changeInitiativeAction);
-            }).catch(function (error) {
+            })).catch(function (error) {
                 //do something about the error
             });
+        } else {
+            cmp.set('v.isDisabled', false);
         }
     }
 })

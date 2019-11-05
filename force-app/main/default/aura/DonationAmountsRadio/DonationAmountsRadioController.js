@@ -77,9 +77,7 @@
             cmp.set('v.donationAmount', Number(changeValue[0]));
         }
 
-        if(changeValue[1]) {
-            helper.fireSetProgramEvent(changeValue[1]);
-        }
+        helper.fireSetProgramEvent(changeValue[1]);
     },
 
     handleOtherAmountChange: function (cmp, event) {

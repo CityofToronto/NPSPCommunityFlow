@@ -96,6 +96,10 @@
 
             //Submit form to Moneris only if an opporunity was created
             if(opportunityId !== null) {
+                //clean up session storage
+                if(sessionStorage) {
+                    sessionStorage.clear();
+                }
                 component.find("paymentForm").getElement().submit();
             } else {
                 $A.util.removeClass(component.find("errorMessage"), "hidden");

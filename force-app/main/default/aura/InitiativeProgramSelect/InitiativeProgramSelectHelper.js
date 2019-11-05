@@ -1,6 +1,6 @@
 ({
     apex: function(cmp, method, params) {
-        return new Promise(function (resolve, reject) {
+        return new Promise($A.getCallback(function (resolve, reject) {
             var action = cmp.get("c." + method);
             action.setParams(params);
             action.setCallback(this, function(response) {
@@ -24,6 +24,6 @@
                 }
             });
             $A.enqueueAction(action);
-        });
+        }));
     }
 })
