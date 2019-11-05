@@ -2,7 +2,7 @@ public with sharing class ReCaptchaV3 {
     
     @AuraEnabled
     public static String verify(String token) {                
-        String privateKey = '6Lfz18AUAAAAAGqgzNAa8Thiv3OrDskVISPlVSk5';
+        String privateKey = '';
         String baseUrl = 'https://www.google.com/recaptcha/api/siteverify';
         HttpResponse r = makeRequest(baseUrl,
                     'secret=' + privateKey + 
