@@ -10,7 +10,7 @@
         });
 
         helper.apex(cmp, "getDonationAmounts", {})
-        .then(function (results) {
+        .then($A.getCallback(function (results) {
             cmp.set('v.donationAmountsMap', results);
             var amounts = [];
             for(var label in results) {
@@ -34,10 +34,13 @@
                     }
 
                     cmp.set('v.donationAmount', sessionStorage.getItem('donationAmount'));
+                    
+                    var changeValue = sessionStorage.getItem('donationSelected').split("|");
+                    helper.fireSetProgramEvent(changeValue[1]);
                 }
             }
 
-        }).catch(function (error) {
+        })).catch(function (error) {
             console.log(error);
             //do something about the error
         });
