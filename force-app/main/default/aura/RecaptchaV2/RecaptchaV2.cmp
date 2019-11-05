@@ -1,5 +1,5 @@
 <aura:component access="global" implements="lightning:availableForFlowScreens" controller="ReCaptchaV3">
     <aura:handler name="init" value="{!this}" action="{!c.init}" />
 
-    <iframe src="/apex/RecaptchaVFPage" class="reCaptcha reCaptchaSmall" id="recaptchaIframe" scrolling="no"></iframe>
+    <iframe src="/apex/RecaptchaVFPage" class="reCaptcha" id="recaptchaIframe" scrolling="no"></iframe>
 </aura:component>

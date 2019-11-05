@@ -2,10 +2,19 @@
     display: none;
 }
 
+.THIS.reCaptcha body {
+    background: none transparent;
+}
+
 .THIS.reCaptcha {
     border:0;
     top:0;
     overflow:hidden;
+    position: fixed;
+    height: 100%;
+    width: 262px;
+    right: 0;
+    z-index: 0;
 }
 
 .THIS.reCaptchaSmall {

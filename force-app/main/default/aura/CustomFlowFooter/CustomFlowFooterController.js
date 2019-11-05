@@ -15,9 +15,9 @@
       }
 
       window.addEventListener("message", function(event) {
-      	if(event.data.action && event.data.action == 'Unlock') {
+      	if(event.data.action && event.data.action == 'unlock') {
       		cmp.set('v.isDisabled', false);  
-         } else if(event.data.action && event.data.action == 'Lock') {
+         } else if(event.data.action && event.data.action == 'lock') {
         	   cmp.set('v.isDisabled', true); 
          }
       }, false);
