@@ -25,7 +25,7 @@
     </lightning:select>
 
     <lightning:select name="program" label="Program" aura:id="programSelect" required="true" 
-                      class="slds-m-bottom_medium" disabled="{! v.isDisabled }" onchange="{! c.onChangeProgram }">
+                      class="slds-m-bottom_medium" disabled="{! v.isDisabled }">
         <option value=""></option>
         <aura:iteration items="{!v.programs}" var="option">
             <option text="{!option.Name}" value="{!option.Id}" selected="{!option.Id==v.programSelected}" />
