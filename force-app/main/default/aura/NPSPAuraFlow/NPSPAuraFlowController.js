@@ -105,5 +105,10 @@
                 $A.util.removeClass(component.find("errorMessage"), "hidden");
             }
         }
+     },
+     
+     handleDestroy: function(component) {
+        var pubsub = component.find('pubsub');
+        pubsub.unregisterAllListeners();
      }
 })

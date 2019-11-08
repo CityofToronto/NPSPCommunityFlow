@@ -1,14 +1,15 @@
 <aura:component implements="forceCommunity:availableForAllPageTypes" access="global" controller="NPSPFlowController">
+    <c:auraPubsub aura:id="pubsub" />
+    <aura:handler name="destroy" value="{!this}" action="{!c.handleDestroy}" />
     <aura:registerEvent name="appEvent" type="c:setProgramEvent"/>
     <aura:attribute name="dmsSettings" type="DMS_Settings__c" />  
     <aura:handler name="init" value="{!this}" action="{!c.init}" />
 
     <div role="main" aria-live="polite" aura:id="flowContainer">
-        <a aria-label="Anchor to main content" name="main"></a>
-        
-        <h1 class="slds-m-left_x-large">DonateTO</h1>
-        <div aura:id="loadingMessage" class="jumbotron slds-m-left_x-large slds-m-right_x-large alert alert-info"><p>Please wait while we retrieve your donation form ...</p></div>
-        <div aura:id="errorMessage" role="alert" class="slds-m-left_x-large slds-m-right_x-large alert alert-danger hidden">
+        <a class="sr-only sr-only-focusable" name="main"></a>
+
+        <div aura:id="loadingMessage" role="status" aria-live="polite" class="jumbotron slds-m-top_large slds-m-left_x-large slds-m-right_x-large alert alert-info"><p>Please wait while we retrieve your donation form ...</p></div>
+        <div aura:id="errorMessage" role="alert" class="slds-m-top_large slds-m-left_x-large slds-m-right_x-large alert alert-danger hidden">
             <p>We are unable to process your donation at this time.</p>
             <p>Sorry for the inconvenience.</p>
         </div>

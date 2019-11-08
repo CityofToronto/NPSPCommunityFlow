@@ -1,0 +1,5 @@
+<aura:component access="global" implements="lightning:availableForFlowScreens">
+    <aura:attribute name="unescapedHTML" type="String" access="global" />
+
+    <aura:unescapedHtml value="{!v.unescapedHTML}" />
+</aura:component>	

@@ -34,8 +34,7 @@ export default class CotSimpleHeader extends LightningElement {
     }
 
     renderedCallback() {
-        if(document.querySelector('h1'))
-          this.updateBreadCrumbNav(document.querySelector('h1').innerText);
+        this.updateBreadCrumbNav("DonateTO");
     }
 
     updateBreadCrumbNav(title) {
@@ -43,6 +42,11 @@ export default class CotSimpleHeader extends LightningElement {
 
         //if there is more to the end of the url, add a link back to the donation page in the breadcrumb
         let urlEnd = window.location.pathname.split("/").pop();
+        
+        if(urlEnd === 'privacy-statement')
+          title = "Privacy Statement";
+        if(urlEnd === 'important-notices')
+          title = "Important Notices";
         if(urlEnd && !currentBreadCrumb.includes("DonateTO")) {
           currentBreadCrumb += '<li><a href="../">DonateTO</a></li>'
         }

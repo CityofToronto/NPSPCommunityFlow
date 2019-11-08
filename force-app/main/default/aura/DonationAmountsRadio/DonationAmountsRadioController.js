@@ -24,21 +24,20 @@
 
             cmp.set('v.donationAmounts', amounts);
 
-            if(sessionStorage) {
-                if(sessionStorage.getItem('donationAmount')) {
-                    cmp.set('v.radioGrpValue', sessionStorage.getItem('donationSelected'));
+            if(sessionStorage && sessionStorage.getItem('donationAmount')) {
+                cmp.set('v.radioGrpValue', sessionStorage.getItem('donationSelected'));
 
-                    if(sessionStorage.getItem('donationSelected') === 'Other') {
-                        $A.util.removeClass(cmp.find('otherAmount'), 'slds-hide');
-                        cmp.find('otherAmount').set('v.value',sessionStorage.getItem('donationAmount'));
-                    }
-
-                    cmp.set('v.donationAmount', sessionStorage.getItem('donationAmount'));
-                    
-                    var changeValue = sessionStorage.getItem('donationSelected').split("|");
-                    helper.fireSetProgramEvent(changeValue[1]);
+                if(sessionStorage.getItem('donationSelected') === 'Other') {
+                    $A.util.removeClass(cmp.find('otherAmount'), 'slds-hide');
+                    cmp.find('otherAmount').set('v.value',sessionStorage.getItem('donationAmount'));
                 }
+
+                cmp.set('v.donationAmount', sessionStorage.getItem('donationAmount'));
+                    
+                var changeValue = sessionStorage.getItem('donationSelected').split("|");
+                helper.fireSetProgramEvent(changeValue[1]);
             }
+
 
         })).catch(function (error) {
             console.log(error);
@@ -49,8 +48,8 @@
             var amount = cmp.get('v.donationAmount');
             var amountSelected = cmp.get('v.radioGrpValue');
             var dmsSettings = cmp.get('v.dmsSettings');
- 
-            if(sessionStorage)  {
+
+            if(sessionStorage && typeof amount !== 'undefined')  {
                  sessionStorage.setItem('donationAmount',amount);
                  sessionStorage.setItem('donationSelected',amountSelected);
             }

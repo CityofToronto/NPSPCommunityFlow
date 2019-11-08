@@ -3,9 +3,7 @@ public with sharing class ReCaptchaClient {
     @AuraEnabled
     public static String verify(String token) {
         DMS_Settings__c dmsSettings = DMS_Settings__c.getOrgDefaults();                
-        HttpResponse r = makeRequest(dmsSettings.Captcha_URL__c,
-                    'secret=' + dmsSettings.reCaptcha_Private_Key__c + 
-                    '&response='  + token);
+        HttpResponse r = makeRequest(dmsSettings.Captcha_URL__c, token);
         String res = r.getBody();    
         // if ( res != null ) {
         //     JSONParser parser = JSON.createParser(res); 
@@ -22,13 +20,16 @@ public with sharing class ReCaptchaClient {
     }
         
     /* Private helper methods */
-        
-    private static HttpResponse makeRequest(string url, string body)  {
+    private static HttpResponse makeRequest(string url, string token)  {
             HttpResponse response = null;
-            HttpRequest req = new HttpRequest();   
+            HttpRequest req = new HttpRequest(); 
+            req.setHeader('Content-Type', 'application/json;charset=UTF-8');
             req.setEndpoint(url);
             req.setMethod('POST');
-            req.setBody (body);
+
+        	String payload = JSON.serialize(new Map<String, String> { 'response' => token });
+            req.setBody(payload);
+        
             try {
                 Http http = new Http();
                 response = http.send(req);

@@ -18,9 +18,8 @@
                 helper.apex(component, "verify", {token: event.data.token})
                 .then(function (results) {                        
                     var oResults = JSON.parse(results);
-
                     if(oResults && oResults.success) {
-                        if(oResults.success == true && oResults.score >= 0.7) {
+                        if(oResults.success == true && oResults.score >= oResults.requiredScore) {
                             //check results and figure out what to do
                             parent.postMessage({action: 'unlock'}, vfOrigin);
                         } else {
