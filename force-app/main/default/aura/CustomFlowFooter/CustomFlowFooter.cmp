@@ -17,6 +17,10 @@
          <aura:if isTrue="{!v.canBack}">
             <lightning:button aura:id="BACK" label="Previous"
                variant="neutral" onclick="{!c.onButtonPressed}" />
+            <aura:set attribute="else">
+            <lightning:button aura:id="CANCEL" label="Cancel"
+                  variant="neutral" onclick="{!c.onButtonPressed}" />
+            </aura:set>
          </aura:if>
       </div>
       <div class="slds-float_right">

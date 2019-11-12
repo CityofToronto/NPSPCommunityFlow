@@ -30,6 +30,11 @@
    onButtonPressed: function(cmp, event, helper) {
       // Figure out which action was called
       var actionClicked = event.getSource().getLocalId();
+
+      if(actionClicked === 'CANCEL') {
+         location.href="https://toronto.ca/donations";
+      }
+
       // Figure out which action was called, save the action for after recaptcha check
       cmp.set('v.actionClicked', actionClicked);
 

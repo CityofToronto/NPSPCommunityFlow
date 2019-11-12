@@ -39,6 +39,9 @@
             }
 
             $A.util.addClass(component.find("loadingMessage"), "hidden");
+
+            var pubsub = component.find('pubsub');
+            pubsub.fireEvent('pageRenderEvent', {title : "Donation Form", flowNavigation : true});
         }
 
         if(event.getParam("status") === "FINISHED") {

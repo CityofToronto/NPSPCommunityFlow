@@ -28,6 +28,6 @@ export default class MonerisTxResultScreen extends LightningElement {
 
     renderedCallback() {
         if(this.template.querySelector('h1'))
-            fireEvent(this.pageRef, 'pageRenderEvent', this.template.querySelector('h1').innerText);
+            fireEvent(this.pageRef, 'pageRenderEvent', {title : this.template.querySelector('h1').innerText});
     }
 }
