@@ -19,6 +19,13 @@
         .then(function (settings) {
             component.set('v.dmsSettings', settings);
         })
+
+        window.addEventListener("message", $A.getCallback(function(event) {
+            if(event.data.action && event.data.action == 'lock') {
+                $A.util.removeClass(component.find("errorMessage"), "hidden");
+                window.scrollTo({left: 0,top: 0,behavior: 'smooth'});
+            }
+        }), false);
     },
         
     handleStatusChange : function (component, event, helper) {
@@ -45,13 +52,16 @@
         }
 
         if(event.getParam("status") === "FINISHED") {
-            component.find("paymentAmount").set("v.value", formResults.DonationAmountNumber.value.toFixed(2));
-            component.find("orderId").set("v.value", formResults.savedPaymentId.value);
-
             var contactId = formResults.existingContactId.value;
             var opportunityId = formResults.savedOpportunityId.value;
             var campaignId = formResults.selectedProgramId.value;
             var campaignOwnerId = formResults.campaignRecordOwnerId.value;
+            var donationAmount = formResults.DonationAmountNumber.value.toFixed(2);
+            var maxDonationAmount = component.get('v.dmsSettings').Maximum_Donation_Amount__c;
+            var minDonationAmount = component.get('v.dmsSettings').Minimum_Donation_Amount__c;
+            
+            component.find("paymentAmount").set("v.value", donationAmount);
+            component.find("orderId").set("v.value", formResults.savedPaymentId.value);
 
             //changes owner of opportunity campaign and opportunity owner to the owner of the campaign
             helper.apex(component, "updateOpportunityCampaign", { opportunityId : opportunityId, campaignId: campaignId, campaignOwnerId: campaignOwnerId })
@@ -98,7 +108,7 @@
             }
 
             //Submit form to Moneris only if an opporunity was created
-            if(opportunityId !== null) {
+            if(opportunityId !== null && donationAmount >= minDonationAmount && donationAmount <= maxDonationAmount) {
                 //clean up session storage
                 if(sessionStorage) {
                     sessionStorage.clear();
