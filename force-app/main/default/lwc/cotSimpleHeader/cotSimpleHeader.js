@@ -54,7 +54,7 @@ export default class CotSimpleHeader extends LightningElement {
         if(urlEnd === 'important-notices')
           title = "Important Notices";
         if(!currentBreadCrumb.includes("DonateTO"))
-          currentBreadCrumb += '<li><a href="https://toronto.ca/donate">DonateTO</a></li>'
+          currentBreadCrumb += '<li><a href="https://www.toronto.ca/donate">DonateTO</a></li>'
         if(urlEnd && !title)
           currentBreadCrumb += '<li><a href="../">Donation Form</a></li>'
         if(title) {

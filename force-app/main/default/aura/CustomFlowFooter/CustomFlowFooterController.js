@@ -32,7 +32,7 @@
       var actionClicked = event.getSource().getLocalId();
 
       if(actionClicked === 'CANCEL') {
-         location.href="https://toronto.ca/donate";
+         location.href="https://www.toronto.ca/donate";
       }
 
       // Figure out which action was called, save the action for after recaptcha check
