@@ -14,6 +14,15 @@
          }
       }
 
+      helper.apex(cmp, "getDMSSettings", {})
+      .then(function (results) {
+         cmp.set('v.dmsSettings', results);
+
+      }).catch(function (error) {
+         console.log(error);
+         //do something about the error
+      });
+
       //recaptcha callback message
       window.addEventListener("message", function(event) {
       	if(event.data.action && event.data.action == 'unlock') {
@@ -32,7 +41,7 @@
       var actionClicked = event.getSource().getLocalId();
 
       if(actionClicked === 'CANCEL') {
-         location.href="https://www.toronto.ca/donate";
+         location.href=cmp.get('v.dmsSettings').Donations_Home_URL__c;
       }
 
       // Figure out which action was called, save the action for after recaptcha check

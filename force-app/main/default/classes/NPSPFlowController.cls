@@ -30,7 +30,7 @@ global without sharing class NPSPFlowController {
         return dmsDonationAmountsMap;
     }
 
-    @AuraEnabled
+    @AuraEnabled(cacheable=true)
     public static DMS_Settings__c getDMSSettings(){
         return DMS_Settings__c.getOrgDefaults();
     }
@@ -40,6 +40,15 @@ global without sharing class NPSPFlowController {
         OpportunityContactRole opr = new OpportunityContactRole(ContactId=contactId, OpportunityId=opportunityId);
         insert opr;
         return opr.Id;
+    }
+
+    @AuraEnabled
+    public static String updateOpportunityPrimaryContact(String contactId, String opportunityId) {
+        Opportunity opportunity = [SELECT Id FROM Opportunity WHERE Id =:opportunityId];
+        opportunity.npsp__Primary_Contact__c = contactId;
+
+        update opportunity;
+        return opportunity.Id;
     }
 
     @AuraEnabled

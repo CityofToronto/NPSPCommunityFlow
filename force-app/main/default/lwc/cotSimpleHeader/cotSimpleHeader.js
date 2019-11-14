@@ -4,6 +4,7 @@ import { LightningElement, wire } from 'lwc';
 import { loadStyle } from 'lightning/platformResourceLoader';
 import { CurrentPageReference } from 'lightning/navigation';
 import { registerListener, unregisterAllListeners } from 'c/pubsub';
+import getDMSSettings from '@salesforce/apex/NPSPFlowController.getDMSSettings'
 
 import COT from '@salesforce/resourceUrl/cot'
 
@@ -38,29 +39,36 @@ export default class CotSimpleHeader extends LightningElement {
     }
 
     updateBreadCrumbNav(titleInfo) {
-        let title = titleInfo.title;
-        let currentBreadCrumbElem = this.template.querySelector('.breadcrumb');
-        let currentBreadCrumb = currentBreadCrumbElem.innerHTML;
 
-        if(titleInfo.flowNavigation && currentBreadCrumbElem.children.length > 2) {  //this is a page navigation from flow
-          currentBreadCrumbElem.children.removeChild(currentBreadCrumbElem.children.length-1);
-        }
-
-        //if there is more to the end of the url, add a link back to the donation page in the breadcrumb
-        let urlEnd = window.location.pathname.split("/").pop();
-        
-        if(urlEnd === 'privacy-statement')
-          title = "Privacy Statement";
-        if(urlEnd === 'important-notices')
-          title = "Important Notices";
-        if(!currentBreadCrumb.includes("DonateTO"))
-          currentBreadCrumb += '<li><a href="https://www.toronto.ca/donate">DonateTO</a></li>'
-        if(urlEnd && !title)
-          currentBreadCrumb += '<li><a href="../">Donation Form</a></li>'
-        if(title) {
-          currentBreadCrumb += '<li>' + title + '</li>'; 
-        }
-
-        this.template.querySelector('.breadcrumb').innerHTML = currentBreadCrumb;
+      getDMSSettings()
+            .then(result => {
+              let title = titleInfo.title;
+              let currentBreadCrumbElem = this.template.querySelector('.breadcrumb');
+      
+              if(titleInfo.flowNavigation && currentBreadCrumbElem.children.length > 2) {  //this is a page navigation from flow
+                currentBreadCrumbElem.removeChild(currentBreadCrumbElem.childNodes[2]);
+              }
+      
+              let currentBreadCrumb = currentBreadCrumbElem.innerHTML;
+      
+              //if there is more to the end of the url, add a link back to the donation page in the breadcrumb
+              let urlEnd = window.location.pathname.split("/").pop();
+              
+              if(urlEnd === 'privacy-statement')
+                title = "Privacy Statement";
+              if(urlEnd === 'important-notices')
+                title = "Important Notices";
+              if(!currentBreadCrumb.includes("DonateTO"))
+                currentBreadCrumb += '<li><a href="'+ result.Donations_Home_URL__c +'">DonateTO</a></li>'
+              if(urlEnd && !title)
+                currentBreadCrumb += '<li><a href="../">Donation Form</a></li>'
+              if(title) {
+                currentBreadCrumb += '<li>' + title + '</li>'; 
+              }
+      
+              this.template.querySelector('.breadcrumb').innerHTML = currentBreadCrumb;
+            })
+            .catch(error => {
+        });
     }
 }

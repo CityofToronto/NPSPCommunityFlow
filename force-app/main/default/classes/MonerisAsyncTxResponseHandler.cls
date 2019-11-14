@@ -63,8 +63,10 @@ global class MonerisAsyncTxResponseHandler {
             
             //only update payment and opportunity if it hasn't already been paid
             if(!payment.npe01__Paid__c && payment.npe01__Check_Reference_Number__c == null) {
-
+                DMS_Settings__c dmsSettings = DMS_Settings__c.getOrgDefaults();
                 payment.npe01__Check_Reference_Number__c = responseResultMap.get('bank_transaction_id');
+                payment.Card_Holder__c = responseResultMap.get('cardholder');
+                payment.Card_Holder__c = payment.Card_Holder__c.replace('+',' ');
 
                 String paymentAmount = responseResultMap.get('charge_total');
                 if(!String.isEmpty(paymentAmount)) {
@@ -80,7 +82,12 @@ global class MonerisAsyncTxResponseHandler {
                 if(resultCode == '1') { //APPROVED
                     opportunity.StageName = 'Posted';
                     opportunity.CloseDate = System.now().date();
-                    opportunity.Tax_Receipt_Number__c = generateTaxReceiptNumber();
+                    opportunity.Card_Holder__c = payment.Card_Holder__c;
+
+                    if(payment.npe01__Payment_Amount__c >= dmsSettings.Minimum_Tax_Receipt_Amount__c) {
+                        opportunity.Tax_Receipt_Number__c = generateTaxReceiptNumber();
+                    }
+
                     //Setting opportunity acknowledge status triggers email workflow automatically
                     opportunity.npsp__Acknowledgment_Status__c = 'Email Acknowledgment Now'; 
                     payment.npe01__Paid__c = true;

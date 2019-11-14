@@ -3,12 +3,16 @@
 import { LightningElement, track, wire } from 'lwc';
 import { fireEvent } from 'c/pubsub';
 import { CurrentPageReference } from 'lightning/navigation';
+import getDMSSettings from '@salesforce/apex/NPSPFlowController.getDMSSettings'
 
 export default class MonerisTxResultScreen extends LightningElement {
 
-    @wire(CurrentPageReference) pageRef;
     @track urlVars = {};
     @track h2Message = '';
+    @track homeUrl;
+    h1EventFired = false;
+
+    @wire(CurrentPageReference) pageRef;
     
     connectedCallback() {
         this.getUrlVars();
@@ -27,7 +31,16 @@ export default class MonerisTxResultScreen extends LightningElement {
     }
 
     renderedCallback() {
-        if(this.template.querySelector('h1'))
+        if(this.template.querySelector('h1') && !this.h1EventFired) {
             fireEvent(this.pageRef, 'pageRenderEvent', {title : this.template.querySelector('h1').innerText});
+            this.h1EventFired = true;
+        }
+
+        getDMSSettings()
+            .then(result => {
+                this.homeUrl = result.Donations_Home_URL__c;
+            })
+            .catch(error => {
+        });
     }
 }

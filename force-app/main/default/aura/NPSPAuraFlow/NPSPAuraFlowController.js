@@ -48,7 +48,7 @@
             $A.util.addClass(component.find("loadingMessage"), "hidden");
 
             var pubsub = component.find('pubsub');
-            pubsub.fireEvent('pageRenderEvent', {title : "Donation Form", flowNavigation : true});
+            pubsub.fireEvent('pageRenderEvent', {title : formResults.PageTitle.value, flowNavigation : true});
         }
 
         if(event.getParam("status") === "FINISHED") {
@@ -62,6 +62,13 @@
             
             component.find("paymentAmount").set("v.value", donationAmount);
             component.find("orderId").set("v.value", formResults.savedPaymentId.value);
+
+            helper.apex(component, "updateOpportunityPrimaryContact", { contactId : contactId, opportunityId: opportunityId })
+            .then(function (result) {
+
+            }).catch(function (error) {
+                //do something about the error
+            });
 
             //changes owner of opportunity campaign and opportunity owner to the owner of the campaign
             helper.apex(component, "updateOpportunityCampaign", { opportunityId : opportunityId, campaignId: campaignId, campaignOwnerId: campaignOwnerId })
