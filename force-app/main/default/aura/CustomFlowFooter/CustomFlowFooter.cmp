@@ -1,5 +1,6 @@
-<aura:component access="global" implements="lightning:availableForFlowScreens">
-
+<aura:component access="global" implements="lightning:availableForFlowScreens" controller="NPSPFlowController">
+   <aura:attribute name="dmsSettings" type="DMS_Settings__c" />
+   
    <!-- Determine which actions are available -->
    <aura:attribute name="canPause" type="Boolean" />
    <aura:attribute name="canBack" type="Boolean" />
