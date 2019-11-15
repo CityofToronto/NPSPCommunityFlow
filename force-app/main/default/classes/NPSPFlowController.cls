@@ -66,6 +66,7 @@ global without sharing class NPSPFlowController {
         contact.Preferred_Contact_Method__c = contactUpdate.Preferred_Contact_Method__c;
         contact.Legacy_Giving__c = contactUpdate.Legacy_Giving__c;
         contact.Company__c = contactUpdate.Company__c;
+        contact.AccountId = contactUpdate.AccountId;
 
         update contact;
         return contact.Id;
