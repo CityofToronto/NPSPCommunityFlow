@@ -105,6 +105,7 @@
                 contact.Preferred_Contact_Method__c = formResults.UpdateContactPreferredContactMethod.value;
                 contact.Legacy_Giving__c = formResults.UpdateContactLegacyGiving.value;
                 contact.Company__c = formResults.UpdateContactCompany.value;
+                contact.AccountId = formResults.UpdateContactAccountId.value;
 
                 helper.apex(component, "updateExistingContact", { oContact : JSON.stringify(contact) })
                 .then(function (result) {
