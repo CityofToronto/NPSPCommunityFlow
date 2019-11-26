@@ -34,13 +34,13 @@ export default class MonerisTxResultScreen extends LightningElement {
         if(this.template.querySelector('h1') && !this.h1EventFired) {
             fireEvent(this.pageRef, 'pageRenderEvent', {title : this.template.querySelector('h1').innerText});
             this.h1EventFired = true;
-        }
 
-        getDMSSettings()
-            .then(result => {
-                this.homeUrl = result.Donations_Home_URL__c;
-            })
-            .catch(error => {
-        });
+            getDMSSettings()
+                .then(result => {
+                    this.homeUrl = result.Donations_Home_URL__c;
+                })
+                .catch(() => {
+            });
+        }
     }
 }

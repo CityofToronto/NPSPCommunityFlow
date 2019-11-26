@@ -54,21 +54,26 @@ export default class CotSimpleHeader extends LightningElement {
               //if there is more to the end of the url, add a link back to the donation page in the breadcrumb
               let urlEnd = window.location.pathname.split("/").pop();
               
-              if(urlEnd === 'privacy-statement')
+              if(urlEnd === 'privacy-statement') {
                 title = "Privacy Statement";
-              if(urlEnd === 'important-notices')
+                titleInfo.flowNavigation = true;
+              }
+              if(urlEnd === 'important-notices') {
                 title = "Important Notices";
+                titleInfo.flowNavigation = true;
+              }
               if(!currentBreadCrumb.includes("DonateTO"))
                 currentBreadCrumb += '<li><a href="'+ result.Donations_Home_URL__c +'">DonateTO</a></li>'
-              if(urlEnd && !title)
+              if(title && !titleInfo.flowNavigation) {
                 currentBreadCrumb += '<li><a href="../">Donation Form</a></li>'
-              if(title) {
+                currentBreadCrumb += '<li>' + title + '</li>'; 
+              } else if(typeof title !== 'undefined') {
                 currentBreadCrumb += '<li>' + title + '</li>'; 
               }
       
               this.template.querySelector('.breadcrumb').innerHTML = currentBreadCrumb;
             })
-            .catch(error => {
+            .catch(() => {
         });
     }
 }

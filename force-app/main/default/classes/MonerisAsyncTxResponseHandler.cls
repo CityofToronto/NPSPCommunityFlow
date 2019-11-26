@@ -41,24 +41,9 @@ global class MonerisAsyncTxResponseHandler {
                 }
             }
             system.debug('MonerisAsyncTxReponseHandler :: parseResponse :: responseResultMap = ' + responseResultMap);
-            
-            /** CODE if decryption is needed 
-            //Decrypt response order id to get payment id
-            DMS_Settings__mdt[] dmsSettings = [SELECT Label, AES_Key_128__c, Moneris_HPP_Key__c, Moneris_Store_Id__c, Moneris_URL__c, Flow_Name__c FROM DMS_Settings__mdt];
-            Map<String, DMS_Settings__mdt> dmsSettingsMap = new Map<String, DMS_Settings__mdt>();
-
-            for(DMS_Settings__mdt settings : dmsSettings) {
-                dmsSettingsMap.put(settings.Label, settings);
-            }
-
-            Blob cryptoKey = EncodingUtil.base64Decode(dmsSettingsMap.get('DEV').AES_Key_128__c);
-            Blob responseId = EncodingUtil.base64Decode(responseResultMap.get('response_order_id'));
-            Blob decryptedData = Crypto.decryptWithManagedIV('AES128', cryptoKey, responseId);
-
-            String paymentId = decryptedData.toString();
-            **/
 
             String paymentId = responseResultMap.get('response_order_id');
+            paymentId = paymentId.split('-')[0];  //strip off end of response_order_id, could be a retry ex: a0755000006wEjJAAU-R01
             npe01__OppPayment__c payment = [SELECT Id, npe01__Opportunity__c, npe01__Paid__c, npe01__Check_Reference_Number__c FROM npe01__OppPayment__c WHERE Id =: paymentId];
             
             //only update payment and opportunity if it hasn't already been paid
