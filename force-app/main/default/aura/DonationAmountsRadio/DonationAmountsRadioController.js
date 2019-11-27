@@ -11,7 +11,6 @@
 
         helper.apex(cmp, "getDonationAmounts", {})
         .then($A.getCallback(function (results) {
-            cmp.set('v.donationAmountsMap', results);
             var amounts = [];
             for(var label in results) {
                 if(results.hasOwnProperty(label))
@@ -35,6 +34,7 @@
                 cmp.set('v.donationAmount', sessionStorage.getItem('donationAmount'));
                     
                 var changeValue = sessionStorage.getItem('donationSelected').split("|");
+                cmp.set('v.lastDonationAmountValue', changeValue);
                 helper.fireSetProgramEvent(changeValue[1]);
             }
 
@@ -70,8 +70,6 @@
         var changeValue = event.getParam("value").split("|");
         var otherTextField = cmp.find('otherAmount');
 
-        var donationsAmountsMap = cmp.get("v.donationAmountsMap");
-
         if(changeValue[0] === 'Other') {
             $A.util.removeClass(otherTextField, 'slds-hide');
         } else {
@@ -79,7 +77,13 @@
             cmp.set('v.donationAmount', Number(changeValue[0]));
         }
 
-        helper.fireSetProgramEvent(changeValue[1]);
+        if(cmp.get('v.lastDonationAmountValue').length > 1 && changeValue.length < 2) {
+            helper.fireSetProgramEvent('clear');
+        } else {
+            helper.fireSetProgramEvent(changeValue[1]);
+        }
+
+        cmp.set('v.lastDonationAmountValue', changeValue);
     },
 
     handleOtherAmountChange: function (cmp, event) {

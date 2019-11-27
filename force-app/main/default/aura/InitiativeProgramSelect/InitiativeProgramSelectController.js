@@ -60,30 +60,36 @@
         if(programName) {
             if(sessionStorage)
             	sessionStorage.clear();
-            helper.apex(cmp, "getCampaignByProgramName", {programName : programName})
-            .then($A.getCallback(function (result) {
-                cmp.find('initiativeSelect').set('v.value',result.ParentId);
-                cmp.set('v.initiativeIdSelected', result.ParentId);
-
-                changeInitiativeAction.setCallback(this, function(response) {
-                    cmp.set('v.isDisabled', true);
-                    setTimeout(function () {
-                        cmp.find('programSelect').set('v.value',result.Id);
-                    }, 800);
+            if(programName !== 'clear') {
+                helper.apex(cmp, "getCampaignByProgramName", {programName : programName})
+                .then($A.getCallback(function (result) {
+                    cmp.find('initiativeSelect').set('v.value',result.ParentId);
+                    cmp.set('v.initiativeIdSelected', result.ParentId);
+    
+                    changeInitiativeAction.setCallback(this, $A.getCallback(function(response) {
+                        cmp.set('v.isDisabled', true);
+                        setTimeout(function () {
+                            cmp.find('programSelect').set('v.value',result.Id);
+                        }, 800);
+                    }));
+                    $A.enqueueAction(changeInitiativeAction);
+                })).catch(function (error) {
+                    //do something about the error
                 });
-                $A.enqueueAction(changeInitiativeAction);
-            })).catch(function (error) {
-                //do something about the error
-            });
+            } else {
+                cmp.find('initiativeSelect').set('v.value', '');
+                cmp.find('programSelect').set('v.value', '');
+                cmp.set('v.isDisabled', false);
+            }
         } else if(programId) {
             helper.apex(cmp, "getParentIdByProgramId", {programId : programId})
             .then($A.getCallback(function (result) {
                 cmp.find('initiativeSelect').set('v.value',result);
-                changeInitiativeAction.setCallback(this, function(response) {
+                changeInitiativeAction.setCallback(this, $A.getCallback(function(response) {
                     setTimeout(function () {
                         cmp.find('programSelect').set('v.value',programId);
                     }, 800);
-                });
+                }));
                 $A.enqueueAction(changeInitiativeAction);
             })).catch(function (error) {
                 //do something about the error

@@ -1,8 +1,8 @@
 <aura:component access="global" implements="lightning:availableForFlowScreens" controller="NPSPFlowController">
         <aura:handler name="init" value="{!this}" action="{!c.init}" />
         <aura:attribute name="dmsSettings" type="DMS_Settings__c" />
-        <aura:attribute name="donationAmountsMap" type="Map" />    
         <aura:attribute name="donationAmounts" type="List" />   
+        <aura:attribute name="lastDonationAmountValue" type="String[]" />   
         <aura:attribute name="donationAmount" type="Decimal" access="global"/>  
 
         <aura:attribute name="radioGrpValue" type="String" />

@@ -15,6 +15,7 @@ public without sharing class DMSEmailHandler {
             thankYouEmail.setTemplateId(thankYouTemplate.Id);
             thankYouEmail.setTargetObjectId(contactId);
             thankYouEmail.setWhatId(opportunityId);
+            thankYouEmail.setOrgWideEmailAddressId(dmsSettings.Organization_From_Email_Id__c);
             emailsToSend.add(thankYouEmail);
 
             if(opportunity.Please_send_eCard__c) {
@@ -24,6 +25,7 @@ public without sharing class DMSEmailHandler {
                 eCardEmail.setTemplateId(eCardTemplate.Id);
                 eCardEmail.setTargetObjectId(contactId);
                 eCardEmail.setWhatId(opportunityId);
+                eCardEmail.setOrgWideEmailAddressId(dmsSettings.Organization_From_Email_Id__c);
                 emailsToSend.add(eCardEmail);
             }
 
