@@ -51,6 +51,7 @@ global class MonerisAsyncTxResponseHandler {
                 DMS_Settings__c dmsSettings = DMS_Settings__c.getOrgDefaults();
                 payment.npe01__Check_Reference_Number__c = responseResultMap.get('bank_transaction_id');
                 payment.Card_Type__c = responseResultMap.get('card');
+                payment.Card_Number__c = responseResultMap.get('card_num');
                 payment.Card_Holder__c = responseResultMap.get('cardholder');
                 payment.Card_Holder__c = payment.Card_Holder__c.replace('+',' ');
 
