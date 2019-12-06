@@ -40,6 +40,7 @@
         helper.apex(cmp, "getAllActiveProgramsByParentId", {parentId : parentId})
         .then($A.getCallback(function (result) {
             cmp.set('v.programs', result);
+            cmp.find('programSelect').set('v.value', '');
 
             if(sessionStorage && sessionStorage.getItem('programSelect')) {
                 cmp.set('v.programSelected', sessionStorage.getItem('programSelect'));
@@ -58,8 +59,10 @@
         var programName = event.getParam("programName");
         var changeInitiativeAction = cmp.get("c.onChangeInitiative");
         if(programName) {
-            if(sessionStorage)
-            	sessionStorage.clear();
+            if(sessionStorage && sessionStorage.getItem('initiativeSelect'))
+            	sessionStorage.removeItem('initiativeSelect');
+            if(sessionStorage && sessionStorage.getItem('programSelect'))
+            	sessionStorage.removeItem('programSelect');
             if(programName !== 'clear') {
                 helper.apex(cmp, "getCampaignByProgramName", {programName : programName})
                 .then($A.getCallback(function (result) {
@@ -82,6 +85,8 @@
                 cmp.set('v.isDisabled', false);
             }
         } else if(programId) {
+            if(sessionStorage && sessionStorage.getItem('programSelect'))
+            	sessionStorage.removeItem('programSelect');
             helper.apex(cmp, "getParentIdByProgramId", {programId : programId})
             .then($A.getCallback(function (result) {
                 cmp.find('initiativeSelect').set('v.value',result);
@@ -92,7 +97,9 @@
                 }));
                 $A.enqueueAction(changeInitiativeAction);
             })).catch(function (error) {
-                //do something about the error
+                //unable to find parentId, this might be an initiative id, try to set it
+                cmp.find('initiativeSelect').set('v.value',programId);
+                cmp.find('programSelect').set('v.value','');
             });
         } else {
             cmp.set('v.isDisabled', false);

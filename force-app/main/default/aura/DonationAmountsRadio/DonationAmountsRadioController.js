@@ -71,6 +71,8 @@
         var otherTextField = cmp.find('otherAmount');
 
         if(changeValue[0] === 'Other') {
+            cmp.find('otherAmount').set('v.value','');
+            cmp.set('v.donationAmount', undefined);
             $A.util.removeClass(otherTextField, 'slds-hide');
         } else {
             $A.util.addClass(otherTextField, 'slds-hide');
