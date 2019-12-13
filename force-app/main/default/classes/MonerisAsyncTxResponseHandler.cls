@@ -49,6 +49,7 @@ global class MonerisAsyncTxResponseHandler {
             //only update payment and opportunity if it hasn't already been paid
             if(!payment.npe01__Paid__c && payment.npe01__Check_Reference_Number__c == null) {
                 DMS_Settings__c dmsSettings = DMS_Settings__c.getOrgDefaults();
+                payment.Transaction_Response__c = resp;
                 payment.npe01__Check_Reference_Number__c = responseResultMap.get('bank_transaction_id');
                 payment.Card_Type__c = responseResultMap.get('card');
                 payment.Card_Number__c = responseResultMap.get('card_num');
@@ -81,7 +82,7 @@ global class MonerisAsyncTxResponseHandler {
                     payment.npe01__Payment_Date__c = System.now().date();
                 } else if(resultCode == '-1') { //CANCELLED
                     opportunity.StageName = 'Withdrawn';
-                } else {  // resultCode == 0 FAILED
+                } else {  // resultCode == 0 FAILED OR DECLINED
                     opportunity.StageName = 'Withdrawn';
                 }
 
