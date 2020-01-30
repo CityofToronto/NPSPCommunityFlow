@@ -69,7 +69,13 @@ global class MonerisAsyncTxResponseHandler {
 
                 if(resultCode == '1') { //APPROVED
                     opportunity.StageName = 'Posted';
-                    opportunity.CloseDate = System.now().date();
+                    
+                    String dateStamp = responseResultMap.get('date_stamp');
+                    if(!String.isEmpty(dateStamp)) {
+                        List<String> dateArray = dateStamp.split('-');
+                    	opportunity.CloseDate = Date.newInstance(Integer.valueOf(dateArray.get(0)), Integer.valueOf(dateArray.get(1)), Integer.valueOf(dateArray.get(2)));
+                    }
+
                     opportunity.Card_Holder__c = payment.Card_Holder__c;
 
                     if(payment.npe01__Payment_Amount__c >= dmsSettings.Minimum_Tax_Receipt_Amount__c) {
