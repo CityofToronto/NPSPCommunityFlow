@@ -16,7 +16,7 @@
     <!--Declare the validation attribute so it can store the validation logic.--> 
     <aura:attribute name="validate" type="Aura.Action"/> 
 
-    <lightning:select name="initiative" label="Initiative" aura:id="initiativeSelect" required="true" 
+    <lightning:select name="initiative" label="Where To Give" aura:id="initiativeSelect" required="true" 
                       class="slds-m-bottom_medium" disabled="{! v.isDisabled }" onchange="{! c.onChangeInitiative }">
         <option value=""></option>
         <aura:iteration items="{!v.initiatives}" var="option">
