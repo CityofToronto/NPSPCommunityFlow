@@ -1,4 +1,4 @@
-public with sharing class InitiativeProgramController {
+global without sharing class InitiativeProgramController {
     
     @AuraEnabled
     public static List<Campaign> getAllActiveInitiatives() {
