@@ -61,6 +61,7 @@
             var minDonationAmount = component.get('v.dmsSettings').Minimum_Donation_Amount__c;
             
             component.find("paymentAmount").set("v.value", donationAmount);
+            component.find("recurAmount").set("v.value", donationAmount);
             component.find("orderId").set("v.value", formResults.savedPaymentId.value);
 
             helper.apex(component, "updateOpportunityPrimaryContact", { contactId : contactId, opportunityId: opportunityId })

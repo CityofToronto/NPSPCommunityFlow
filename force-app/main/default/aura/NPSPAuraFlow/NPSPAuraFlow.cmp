@@ -20,9 +20,19 @@
             <input type="hidden" name="ps_store_id" value="{!v.dmsSettings.Moneris_Store_Id__c}" />
             <input type="hidden" name="hpp_key" value="{!v.dmsSettings.Moneris_HPP_Key__c}" />
             <lightning:input aura:id="paymentAmount" class="slds-hide" type="hidden" name="charge_total" value="" />
-            <!--MORE OPTIONAL VARIABLES CAN BE DEFINED HERE -->
+            <!-- MORE OPTIONAL VARIABLES CAN BE DEFINED HERE -->
             <!-- Merchant defined unique transaction identifier - must be unique for every transaction attempt. -->
             <lightning:input aura:id="orderId" class="slds-hide" type="hidden" name="order_id" value="" />
+            <!-- REOCCURING PAYMENT CONFIGURATION -->
+            <input type="hidden" name="doRecur" value ="1" /> 
+            <input type="hidden" name="recurUnit" value ="day" /> 
+            <input type="hidden" name="recurPeriod" value="1" />
+            <!-- set to next month for start date, because charge_total will be billed immediately -->
+            <input type="hidden" name="recurStartDate" value="2020/03/19" />
+            <!-- monthly for one year (12 payments) -->
+            <input type="hidden" name="recurNum" value="12" />
+            <input type="hidden" name="recurStartNow" value ="true" />
+            <lightning:input aura:id="recurAmount" class="slds-hide" type="hidden" name="recurAmount" value="" />
         </form>
     </div>
 </aura:component>	
