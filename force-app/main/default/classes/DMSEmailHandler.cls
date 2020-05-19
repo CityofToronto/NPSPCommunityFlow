@@ -3,13 +3,25 @@ public without sharing class DMSEmailHandler {
     public static void sendEmail(String contactId, String opportunityId) {
         DMS_Settings__c dmsSettings = DMS_Settings__c.getOrgDefaults();
 		
-        Opportunity opportunity = [Select npsp__Acknowledgment_Status__c, npsp__Acknowledgment_Date__c, Please_send_eCard__c from Opportunity where id =: opportunityId];
+        Opportunity opportunity = [Select npsp__Acknowledgment_Status__c, npsp__Acknowledgment_Date__c, Please_send_eCard__c, Program__c from Opportunity where id =: opportunityId];
         opportunity.npsp__Acknowledgment_Status__c = 'Email Acknowledgment Not Sent';
 
         if(!dmsSettings.Disable_Email__c) {
             
+            DMS_Email_Templates__mdt[] emailTemplates = [SELECT Program__c, Template__c FROM DMS_Email_Templates__mdt];
+            Map<String, String> emailTemplatesMap = new Map<String, String>();
+
+            for(DMS_Email_Templates__mdt template : emailTemplates) {
+                emailTemplatesMap.put(template.Program__c, template.Template__c);
+            }
+
+            String templateName = emailTemplatesMap.get(opportunity.Program__c);
+            if(templateName == null) {
+                templateName = emailTemplatesMap.get('Default');
+            }
+
             List<Messaging.SingleEmailMessage> emailsToSend = new List<Messaging.SingleEmailMessage>();
-            EmailTemplate thankYouTemplate = [select Id FROM EmailTemplate WHERE DeveloperName = 'DMSThankYouWithReceiptAttachment' limit 1];
+            EmailTemplate thankYouTemplate = [select Id FROM EmailTemplate WHERE DeveloperName =: templateName limit 1];
 
             Messaging.SingleEmailMessage thankYouEmail = new Messaging.SingleEmailMessage();
             thankYouEmail.setTemplateId(thankYouTemplate.Id);
@@ -19,7 +31,8 @@ public without sharing class DMSEmailHandler {
             emailsToSend.add(thankYouEmail);
 
             if(opportunity.Please_send_eCard__c) {
-                EmailTemplate eCardTemplate = [select Id FROM EmailTemplate WHERE DeveloperName = 'DMSECard' limit 1];
+                String eCardTemplateName = emailTemplatesMap.get('ECardDefault');
+                EmailTemplate eCardTemplate = [select Id FROM EmailTemplate WHERE DeveloperName =: eCardTemplateName limit 1];
 
                 Messaging.SingleEmailMessage eCardEmail = new Messaging.SingleEmailMessage();
                 eCardEmail.setTemplateId(eCardTemplate.Id);
