@@ -57,6 +57,7 @@ public without sharing class DMSEmailHandler {
         update opportunity;
     }
     
+    /*
     //DOES NOT CURRENTLY WORK
     private static Messaging.EmailFileAttachment getDMSTaxReceiptAttachment(String contactId, String opportunityId) {
         EmailTemplate taxTemplate = [select Id FROM EmailTemplate WHERE DeveloperName = 'DMSTaxReceipt' limit 1];
@@ -72,5 +73,5 @@ public without sharing class DMSEmailHandler {
         }
         
         return null;
-    }
+    }*/
 }
