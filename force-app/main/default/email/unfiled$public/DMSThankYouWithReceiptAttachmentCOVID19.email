@@ -1,0 +1,257 @@
+<messaging:emailTemplate subject="Thank You for your Donation to the City of Toronto" recipientType="Contact" relatedToType="Opportunity" replyTo="donate@toronto.ca">
+<messaging:plainTextEmailBody >
+Toronto Office of Partnerships
+Tel: {!$Setup.DMS_Settings__c.Donations_Phone__c}
+Fax: {!$Setup.DMS_Settings__c.Donations_Fax__c}
+{!$Setup.DMS_Settings__c.Donations_Email__c}
+toronto.ca/donate
+
+
+{!CASE(MONTH(TODAY()),1,"January",2,"February",3,"March",4,"April",5,"May",6,"June",7,"July",8,"August",9,"September",10,"October",11,"November",12,"December","Month")} {!DAY(TODAY())}, {!YEAR(TODAY())}
+
+{!IF(relatedTo.Account.RecordType.Name=='Organization',relatedTo.Account.Name,relatedTo.Card_Holder__c)}
+{!recipient.MailingStreet}
+{!UPPER(LEFT( recipient.MailingCity,1 ))}{!LOWER(Mid( recipient.MailingCity, 2, Len( recipient.MailingCity )-1))}, {!recipient.MailingState} {!UPPER(recipient.MailingPostalCode)}
+
+Dear {!IF(relatedTo.Account.RecordType.Name=='Organization',relatedTo.Account.Name,relatedTo.Card_Holder__c)},
+                           
+I want to personally thank you for donating to the City of Toronto during the COVID-19 pandemic. Your donation will directly benefit the work we are doing with our partners to support everyone impacted by this virus..
+
+It is gifts like yours that reinforce the Toronto way during what is a very challenging time for many of our residents. Toronto prides itself on being a city filled with people that take care of each other, particularly the most vulnerable during the most trying of times. Your donation is another example of that.
+
+I want you to know that any donation made to the City of Toronto’s COVID-19 response will help support the delivery of vital, community-focused services, both now and during recovery, positively impacting the lives of many right here in our city.
+
+We are all in this together and DonateTO is helping us ensure that we are able to get donations to where they are needed most, as quickly as possible.  Thank you, again,  for your generosity and for stepping up to help in the City's efforts to fight COVID-19. Your generosity will help ensure that our city comes back from this emergency stronger than ever.
+
+Please feel free to contact our DonateTO team at 416-392-1144 or {!$Setup.DMS_Settings__c.Donations_Email__c} if you have any questions about your donation.
+
+{!IF(relatedTo.Amount!=null && relatedTo.Amount>=$Setup.DMS_Settings__c.Minimum_Tax_Receipt_Amount__c,"Note, your tax receipt is attached.","")}
+
+Sincerely,
+
+John Tory,
+Mayor, City of Toronto
+
+</messaging:plainTextEmailBody>
+<messaging:htmlEmailBody >
+<html>
+<head>
+  <title>Donation Thank You Letter</title>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+  <meta content="width=device-width" name="viewport" />
+  <apex:outputText escape="false" value="<style>body{font-family:Arial;size:11pt;color:black}.no-margins{margin: 0}
+  .col-md-8{width: 75%;float: left}.col-md-4{width: 25%;float: left}.right{float: right}.signature{margin-top:20px;font-size:12px}</style>" />
+</head>
+<body>
+<table role="presentation" width="640" style="width:640px;" cellpadding="0" cellspacing="0" border="0" align="center">
+<tr>
+<td align="center" bgcolor="#ffffff" background="{!$Setup.DMS_Settings__c.Community_Base_URL__c}/resource/1571747913000/cot/img/tory-logo-skyline-background-938.png" width="640" height="900" valign="top" style="background: url('{!$Setup.DMS_Settings__c.Community_Base_URL__c}/resource/1571747913000/cot/img/tory-logo-skyline-background-938.png') center / cover no-repeat #ffffff;">
+<!--[if gte mso 9]>
+<v:image xmlns:v="urn:schemas-microsoft-com:vml" fill="true" stroke="false" style=" border: 0;display: inline-block; width: 480pt; height: 675pt;" src="{!$Setup.DMS_Settings__c.Community_Base_URL__c}/resource/1571747913000/cot/img/tory-logo-skyline-background-938.png" />                
+<v:rect xmlns:v="urn:schemas-microsoft-com:vml" fill="true" stroke="false" style=" border: 0;display: inline-block;position: absolute; width: 480pt; height:675pt;">
+<v:fill  opacity="0%" color="#ffffff" />
+<v:textbox inset="0,0,0,0">
+<![endif]-->
+<div>
+          <table role="presentation" width="640" border="0" cellpadding="0" cellspacing="0">
+            <tbody>
+              <tr>
+                <td>
+                  <table border="0" cellpadding="0" cellspacing="0">
+                    <tbody>
+                      <tr>
+                        <td style="padding:150px 15px 0 15px;font-family:Arial;size:11pt;color:black" width="640">
+                          <apex:outputText value="{0,date,MMMM dd, yyyy}">
+                              <apex:param value="{!TODAY()}" /> 
+                          </apex:outputText> 
+                          <div>&nbsp;</div>
+                          <div>
+                            <div>{!IF(relatedTo.Account.RecordType.Name=='Organization',relatedTo.Account.Name,relatedTo.Card_Holder__c)}</div>
+                            <div>{!recipient.MailingStreet}</div>
+                            <div>{!UPPER(LEFT( recipient.MailingCity,1 ))}{!LOWER(Mid( recipient.MailingCity, 2, Len( recipient.MailingCity )-1))},
+                            {!recipient.MailingState} {!UPPER(recipient.MailingPostalCode)}</div>
+                          </div>
+                          <p>Dear {!IF(relatedTo.Account.RecordType.Name=='Organization',relatedTo.Account.Name,relatedTo.Card_Holder__c)},</p>
+                          
+                          <p>I want to personally thank you for donating to the City of Toronto during the COVID-19 pandemic.
+                          Your donation will directly benefit the work we are doing with our partners to support everyone impacted by this virus.</p>
+                          
+                          <p>It is gifts like yours that reinforce the Toronto way during what is a very challenging time for many of our residents. 
+                          Toronto prides itself on being a city filled with people that take care of each other, particularly the most vulnerable 
+                          during the most trying of times. Your donation is another example of that.</p>
+                          
+                          <p>I want you to know that any donation made to the City of Toronto’s COVID-19 response will help support the delivery of vital, 
+                          community-focused services, both now and during recovery, positively impacting the lives of many right here in our city.</p>
+                          
+                          <p>We are all in this together and DonateTO is helping us ensure that we are able to get donations to where they are 
+                          needed most, as quickly as possible.  Thank you, again,  for your generosity and for stepping up to help in the City's efforts 
+                          to fight COVID-19. Your generosity will help ensure that our city comes back from this emergency stronger than ever. </p>
+
+                          <p>
+                          Please feel free to contact our DonateTO team at 416-392-1144 or <a href="mailto:{!$Setup.DMS_Settings__c.Donations_Email__c}">{!$Setup.DMS_Settings__c.Donations_Email__c}</a>
+                          if you have any questions about your donation.
+                          </p>
+                          
+                          <p>
+                          {!IF(relatedTo.Amount!=null && relatedTo.Amount>=$Setup.DMS_Settings__c.Minimum_Tax_Receipt_Amount__c,"Note, your tax receipt is attached.","")}
+                          </p>
+                          <p>Sincerely,</p>
+                          <div class="signature">
+                            <img src="{!$Setup.DMS_Settings__c.Community_Base_URL__c}/resource/1571747913000/cot/img/john-tory-signature-936.png" alt="John Tory signature" width="105" />
+                            <div>Mayor John Tory</div>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+</div>
+<!--[if gte mso 9]>
+</v:textbox>
+</v:fill>
+</v:rect>
+</v:image>
+<![endif]-->
+</td>
+</tr>
+</table>
+</body>
+</html>
+</messaging:htmlEmailBody>
+
+<messaging:attachment renderas="application/pdf" filename="Receipt {!relatedTo.Tax_Receipt_Number__c}.pdf" rendered="{!relatedTo.Amount!=null && relatedTo.Amount>=$Setup.DMS_Settings__c.Minimum_Tax_Receipt_Amount__c}">
+<html>
+<head>
+  <title>Donation Tax Receipt</title>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+  <meta content="width=device-width" name="viewport" />
+  <apex:outputText escape="false" value="<style>body{font-family:Arial;size:10pt;}.no-margins{margin: 0}.row{clear:both}.center{text-align:center}hr{border-top:dotted 3px}h2{margin-top:0;margin-bottom:0}
+  .col-md-12{width:100%}.col-md-8{width:75%;float: left}.col-md-7{width: 65.5%;float: left}.col-md-5{width: 32%;float: left}.col-md-4{width: 25%;float: left}.row{width:100%;clear:both}
+  .right{float:right}.partition{font:11px;color:#A9A9A9;margin:25px 0 25px}.row div{min-height:1px;position:relative;}.signature{margin:100px 0 25px;font-size:11px}.signature img{width:225px;border-bottom:1px solid black;}</style>" />
+</head>
+<body>
+    <div class="col-md-8">
+        <h2>Receipt No: {!relatedTo.Tax_Receipt_Number__c}</h2>
+        <p>Official Income Tax Receipt for Income Tax Purposes</p>
+        <p>Donation From:</p>
+        <div style="margin:10px 0 20px 25px">
+            <div>{!IF(relatedTo.Account.RecordType.Name=='Organization',relatedTo.Account.Name,relatedTo.Card_Holder__c)}</div>
+            <div>{!recipient.MailingStreet}</div>
+            <div>{!UPPER(LEFT( recipient.MailingCity,1 ))}{!LOWER(Mid( recipient.MailingCity, 2, Len( recipient.MailingCity )-1))}, 
+            {!recipient.MailingState} {!UPPER(recipient.MailingPostalCode)}</div>
+        </div>
+        <div class="row">
+            <div class="col-md-5">
+                Issue Date:
+            </div>
+            <div class="col-md-7">
+                <apex:outputText value="{0,date,MMMM dd, yyyy}"><apex:param value="{!TODAY()}" /></apex:outputText>&nbsp;
+            </div>
+            <div class="col-md-5">
+                Donation Date:
+            </div>
+            <div class="col-md-7">
+                <apex:outputText value="{0,date,MMMM dd, yyyy}"><apex:param value="{!relatedTo.CloseDate}" /></apex:outputText>&nbsp;
+            </div>
+            <div class="col-md-5">
+                For:
+            </div>
+            <div class="col-md-7">
+                <apex:outputText value="{0}"><apex:param value="{!relatedTo.Campaign.Name}" /></apex:outputText>&nbsp;
+            </div>
+            <div class="col-md-5">
+                Donation Amount:
+            </div>
+            <div class="col-md-7">
+                <apex:outputText value="${0,number,00.00}"><apex:param value="{!relatedTo.Amount}" /></apex:outputText>&nbsp;
+            </div>
+        </div>
+        
+        <div class="signature">
+            <apex:image url="{!URLFOR($Resource.cot,'img/andrew-flynn-signature.png')}" alt="Andrew Flynn signature" />
+            <div>Andrew Flynn, Controller</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <apex:image url="{!URLFOR($Resource.cot,'img/city_logo_bw_sm.png')}" alt="City of Toronto logo" />
+        <div>City of Toronto</div>
+        <div>Accounting Services</div>
+        <div>14th Floor, Metro Hall</div>
+        <div>55 John Street</div>
+        <div>Toronto, ON M5V 3C6</div>
+        <div>{!$Setup.DMS_Settings__c.Accounting_Phone__c}</div>
+        <div><a href="https://www.toronto.ca">www.toronto.ca</a></div>
+    </div>
+    <div class="row col-md-12 center">
+        For information on qualified donees, visit Canada Revenue Agency: <a href="https://canada.ca/charities-giving">canada.ca/charities-giving</a>
+    </div>
+    
+    <div class="row col-md-12 center partition">
+    ORIGINAL RECEIPT
+    <hr />
+    RECIPIENT'S COPY
+    </div>
+    
+    <div class="col-md-8">
+        <h2>Receipt No: {!relatedTo.Tax_Receipt_Number__c}</h2>
+        <p>Official Income Tax Receipt for Income Tax Purposes</p>
+        <p>Donation From:</p>
+        <div style="margin:10px 0 20px 25px">
+            <div>{!IF(relatedTo.Account.RecordType.Name=='Organization',relatedTo.Account.Name,relatedTo.Card_Holder__c)}</div>
+            <div>{!recipient.MailingStreet}</div>
+            <div>{!UPPER(LEFT( recipient.MailingCity,1 ))}{!LOWER(Mid( recipient.MailingCity, 2, Len( recipient.MailingCity )-1))}, 
+            {!recipient.MailingState} {!UPPER(recipient.MailingPostalCode)}</div>
+        </div>
+        <div class="row">
+            <div class="col-md-5">
+                Issue Date:
+            </div>
+            <div class="col-md-7">
+                <apex:outputText value="{0,date,MMMM dd, yyyy}"><apex:param value="{!TODAY()}" /></apex:outputText>&nbsp;
+            </div>
+            <div class="col-md-5">
+                Donation Date:
+            </div>
+            <div class="col-md-7">
+                <apex:outputText value="{0,date,MMMM dd, yyyy}"><apex:param value="{!relatedTo.CloseDate}" /></apex:outputText>&nbsp;
+            </div>
+            <div class="col-md-5">
+                For:
+            </div>
+            <div class="col-md-7">
+                <apex:outputText value="{0}"><apex:param value="{!relatedTo.Campaign.Name}" /></apex:outputText>&nbsp;
+            </div>
+            <div class="col-md-5">
+                Donation Amount:
+            </div>
+            <div class="col-md-7">
+                <apex:outputText value="${0,number,00.00}"><apex:param value="{!relatedTo.Amount}" /></apex:outputText>&nbsp;
+            </div>
+        </div>
+        
+        <div class="signature">
+            <apex:image url="{!URLFOR($Resource.cot,'img/andrew-flynn-signature.png')}" alt="Andrew Flynn signature" />
+            <div>Andrew Flynn, Controller</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <apex:image url="{!URLFOR($Resource.cot,'img/city_logo_bw_sm.png')}" alt="City of Toronto logo" />
+        <div>City of Toronto</div>
+        <div>Accounting Services</div>
+        <div>14th Floor, Metro Hall</div>
+        <div>55 John Street</div>
+        <div>Toronto, ON M5V 3C6</div>
+        <div>{!$Setup.DMS_Settings__c.Accounting_Phone__c}</div>
+        <div><a href="https://www.toronto.ca">www.toronto.ca</a></div>
+    </div>
+    <div class="row col-md-12 center">
+        For information on qualified donees, visit Canada Revenue Agency: <a href="https://canada.ca/charities-giving">canada.ca/charities-giving</a>
+    </div>
+</body>
+</html>
+</messaging:attachment>
+
+</messaging:emailTemplate>

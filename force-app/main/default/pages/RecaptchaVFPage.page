@@ -1,0 +1,51 @@
+<apex:page showHeader="false" sidebar="false" >
+    <html>
+      <head>
+        <title>reCAPTCHA v3</title>
+        <script>
+          //parent.postMessage({
+          //action: 'lock'
+          //}, "{!$Setup.DMS_Settings__c.Community_Base_URL__c}"); 
+            
+            var captchaBOX = document.createElement("div");
+            captchaBOX.id = "captchaBOX";
+            document.body.style.background = "none";
+            document.body.appendChild(captchaBOX);
+          
+            var loadCaptcha = function(){
+                window.captcha = grecaptcha.render('captchaBOX', {
+                'sitekey' : '{!$Setup.DMS_Settings__c.reCaptcha_Site_Key__c}',
+                'callback' : doCaptcha,
+                'size': 'invisible'
+                });
+            };
+            
+            function doCaptcha(CAPTCHATOKEN){
+                parent.postMessage({
+                    action: 'verify',
+                    token: CAPTCHATOKEN
+                }, '{!$Setup.DMS_Settings__c.Community_Base_URL__c}'); 
+            };
+        </script>
+        <script src="https://www.google.com/recaptcha/api.js?onload=loadCaptcha&render=explicit&sitekey={!$Setup.DMS_Settings__c.reCaptcha_Site_Key__c}"></script>
+        <script>
+            let vfOrigin = location.protocol + '//' + location.hostname;
+            var executeEvent = function(event) {
+                if (event.origin !== vfOrigin) {
+                	return;
+            	}
+                
+                if(event.data.action === 'execute') {
+                    grecaptcha.ready(function() {
+                		grecaptcha.execute();
+                    });
+                }
+            };
+          
+          	if (window.addEventListener) {
+            	window.addEventListener("message", executeEvent, false);
+        	}
+        </script>
+        </head>
+    </html>
+</apex:page>

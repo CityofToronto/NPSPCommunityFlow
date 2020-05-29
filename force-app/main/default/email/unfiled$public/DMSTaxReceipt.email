@@ -1,0 +1,135 @@
+<messaging:emailTemplate subject="Official Income Tax Receipt" recipientType="Contact" relatedToType="Opportunity">
+<messaging:htmlEmailBody >
+<html>
+<head>
+  <title>Donation Tax Receipt</title>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+  <meta content="width=device-width" name="viewport" />
+  <apex:outputText escape="false" value="<style>body{font-family:Arial;size:10pt;}.no-margins{margin: 0}.row{clear:both}.center{text-align:center}hr{border-top:dotted 3px}h2{margin-top:0;margin-bottom:0}
+  .col-md-12{width:100%}.col-md-8{width:75%;float: left}.col-md-7{width: 65.5%;float: left}.col-md-5{width: 32%;float: left}.col-md-4{width: 25%;float: left}.row{width:100%;clear:both}
+  .right{float:right}.partition{font:11px;color:#A9A9A9;margin:25px 0 25px}.row div{min-height:1px;position:relative;}.signature{margin:100px 0 25px;font-size:11px}.signature img{width:225px;border-bottom:1px solid black;}</style>" />
+</head>
+<body>
+    <div class="col-md-8">
+        <h2>Receipt No: {!relatedTo.Tax_Receipt_Number__c}</h2>
+        <p>Official Income Tax Receipt for Income Tax Purposes</p>
+        <p>Donation From:</p>
+        <div style="margin:10px 0 20px 25px">
+            <apex:outputText rendered="{!relatedTo.Account.RecordType.Name=='Organization'}">{!relatedTo.Account.Name}</apex:outputText>
+            <div>{!relatedTo.Card_Holder__c}</div>
+            <div>{!recipient.MailingStreet}</div>
+            <div>{!UPPER(LEFT( recipient.MailingCity,1 ))}{!LOWER(Mid( recipient.MailingCity, 2, Len( recipient.MailingCity )-1))}, 
+            {!recipient.MailingState} {!UPPER(recipient.MailingPostalCode)}</div>
+        </div>
+        <div class="row">
+            <div class="col-md-5">
+                Issue Date:
+            </div>
+            <div class="col-md-7">
+                <apex:outputText value="{0,date,MMMM dd, yyyy}"><apex:param value="{!TODAY()}" /></apex:outputText>&nbsp;
+            </div>
+            <div class="col-md-5">
+                Donation Date:
+            </div>
+            <div class="col-md-7">
+                <apex:outputText value="{0,date,MMMM dd, yyyy}"><apex:param value="{!relatedTo.CloseDate}" /></apex:outputText>&nbsp;
+            </div>
+            <div class="col-md-5">
+                For:
+            </div>
+            <div class="col-md-7">
+                <apex:outputText value="{0}"><apex:param value="{!relatedTo.Campaign.Name}" /></apex:outputText>&nbsp;
+            </div>
+            <div class="col-md-5">
+                Donation Amount:
+            </div>
+            <div class="col-md-7">
+                <apex:outputText value="${0,number,00.00}"><apex:param value="{!relatedTo.Amount}" /></apex:outputText>&nbsp;
+            </div>
+        </div>
+        
+        <div class="signature">
+            <apex:image url="{!URLFOR($Resource.cot,'img/andrew-flynn-signature.png')}" alt="Andrew Flynn signature" />
+            <div>Andrew Flynn, Controller</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <apex:image url="{!URLFOR($Resource.cot,'img/city_logo_bw_sm.png')}" alt="City of Toronto logo" />
+        <div>City of Toronto</div>
+        <div>Accounting Services</div>
+        <div>14th Floor, Metro Hall</div>
+        <div>55 John Street</div>
+        <div>Toronto, ON M5V 3C6</div>
+        <div>{!$Setup.DMS_Settings__c.Accounting_Phone__c}</div>
+        <div><a href="https://www.toronto.ca">www.toronto.ca</a></div>
+    </div>
+    <div class="row col-md-12 center">
+        For information on qualified donees, visit Canada Revenue Agency: <a href="https://canada.ca/charities-giving">canada.ca/charities-giving</a>
+    </div>
+    
+    <div class="row col-md-12 center partition">
+    ORIGINAL RECEIPT
+    <hr />
+    RECIPIENT'S COPY
+    </div>
+    
+    <div class="col-md-8">
+        <h2>Receipt No: {!relatedTo.Tax_Receipt_Number__c}</h2>
+        <p>Official Income Tax Receipt for Income Tax Purposes</p>
+        <p>Donation From:</p>
+        <div style="margin:10px 0 20px 25px">
+            <apex:outputText rendered="{!relatedTo.Account.RecordType.Name=='Organization'}">{!relatedTo.Account.Name}</apex:outputText>
+            <div>{!relatedTo.Card_Holder__c}</div>
+            <div>{!recipient.MailingStreet}</div>
+            <div>{!UPPER(LEFT( recipient.MailingCity,1 ))}{!LOWER(Mid( recipient.MailingCity, 2, Len( recipient.MailingCity )-1))}, 
+            {!recipient.MailingState} {!UPPER(recipient.MailingPostalCode)}</div>
+        </div>
+        <div class="row">
+            <div class="col-md-5">
+                Issue Date:
+            </div>
+            <div class="col-md-7">
+                <apex:outputText value="{0,date,MMMM dd, yyyy}"><apex:param value="{!TODAY()}" /></apex:outputText>&nbsp;
+            </div>
+            <div class="col-md-5">
+                Donation Date:
+            </div>
+            <div class="col-md-7">
+                <apex:outputText value="{0,date,MMMM dd, yyyy}"><apex:param value="{!relatedTo.CloseDate}" /></apex:outputText>&nbsp;
+            </div>
+            <div class="col-md-5">
+                For:
+            </div>
+            <div class="col-md-7">
+                <apex:outputText value="{0}"><apex:param value="{!relatedTo.Campaign.Name}" /></apex:outputText>&nbsp;
+            </div>
+            <div class="col-md-5">
+                Donation Amount:
+            </div>
+            <div class="col-md-7">
+                <apex:outputText value="${0,number,00.00}"><apex:param value="{!relatedTo.Amount}" /></apex:outputText>&nbsp;
+            </div>
+        </div>
+        
+        <div class="signature">
+            <apex:image url="{!URLFOR($Resource.cot,'img/andrew-flynn-signature.png')}" alt="Andrew Flynn signature" />
+            <div>Andrew Flynn, Controller</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <apex:image url="{!URLFOR($Resource.cot,'img/city_logo_bw_sm.png')}" alt="City of Toronto logo" />
+        <div>City of Toronto</div>
+        <div>Accounting Services</div>
+        <div>14th Floor, Metro Hall</div>
+        <div>55 John Street</div>
+        <div>Toronto, ON M5V 3C6</div>
+        <div>{!$Setup.DMS_Settings__c.Accounting_Phone__c}</div>
+        <div><a href="https://www.toronto.ca">www.toronto.ca</a></div>
+    </div>
+    <div class="row col-md-12 center">
+        For information on qualified donees, visit Canada Revenue Agency: <a href="https://canada.ca/charities-giving">canada.ca/charities-giving</a>
+    </div>
+</body>
+</html>
+</messaging:htmlEmailBody>
+</messaging:emailTemplate>

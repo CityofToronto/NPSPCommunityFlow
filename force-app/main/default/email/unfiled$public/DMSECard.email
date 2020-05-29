@@ -1,0 +1,45 @@
+<messaging:emailTemplate subject="Gift to {!relatedTo.Campaign.Name}, CITY OF TORONTO" recipientType="Contact" relatedToType="Opportunity">
+<messaging:htmlEmailBody >
+<table cellspacing="0" cellpadding="0" border="0" width="100%" style="width: 100% !important;">
+    <tr>
+        <td height="50" style="height: 50px;" valign="middle" width="550" align="center">
+        In 
+        <apex:outputText rendered="{!relatedTo.npsp__Tribute_Type__c=='Honor'}"> Honour </apex:outputText>
+        <apex:outputText rendered="{!relatedTo.npsp__Tribute_Type__c=='Memorial'}"> Memory </apex:outputText>
+        of {!relatedTo.npsp__Honoree_Name__c} 
+        </td>
+    </tr>
+    <tr>
+        <td align="left" valign="top" width="550px" height="2" style="background-color: #000; border-collapse:collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; mso-line-height-rule: exactly; line-height: 1px;"><!--[if gte mso 15]>&nbsp;<![endif]--></td>
+    </tr>
+    <tr>
+        <td height="50" style="height: 50px;" valign="middle" width="550" align="center">
+            A donation has been made to {!relatedTo.Campaign.Name} 
+            <apex:outputText rendered="{!relatedTo.npsp__Tribute_Type__c=='Memorial'}"> with sincere sympathy </apex:outputText>
+            from {!recipient.Name}
+        </td>
+    </tr>
+    <tr>
+        <td align="left" valign="top" width="550px" height="2" style="background-color: #000; border-collapse:collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; mso-line-height-rule: exactly; line-height: 1px;"><!--[if gte mso 15]>&nbsp;<![endif]--></td>
+    </tr>
+    <tr>
+        <td height="80" style="height: 80px;" valign="middle" width="550" align="center">
+            <i><apex:outputText value="{!relatedTo.npsp__Notification_Message__c}" style="white-space:pre;" escape="false" /></i>
+        </td>
+    </tr>
+    <apex:outputText rendered="{!relatedTo.npsp__Tribute_Type__c=='Memorial'}">
+    <tr>
+        <td height="25" style="height: 25px;" valign="middle" width="550" align="center">
+            May the knowledge that this gift will help citizens of Toronto be of comfort to you at this time.
+        </td>
+    </tr>
+    </apex:outputText>
+    <tr>
+        <td height="50" style="height: 50px;" valign="middle" width="550" align="center">
+            For more information on this initiative, please visit <a href="{!$Setup.DMS_Settings__c.Donations_Home_URL__c}">DonateTO</a>
+        </td>
+    </tr>
+</table>
+    
+</messaging:htmlEmailBody>
+</messaging:emailTemplate>

@@ -1,0 +1,154 @@
+<apex:page standardStylesheets="true" controller="TaxReceiptsDownloadController" id="mypage" docType="html-5.0">
+
+<apex:includeScript value="{!URLFOR($Resource.Jq, '/js/jquery.js')}"/>
+
+<script>
+    $(function(){
+
+    });    
+</script>
+
+<style>
+    label{
+        font-weight:bold;
+        margin-left:10px;
+    }
+</style> 
+
+<!-- Here is the css styles that will be used for the progress bars -->
+<style>
+    .progressBar{      
+        border:1px solid #DDDDDD;
+        height: 19px;
+        width: 300px;
+        -moz-border-radius: 5px; 
+        -webkit-border-radius: 5px;
+    }
+    .progress{            
+        border:1px solid #E78F08;
+        height: 100%;
+        margin: -1px;
+        text-align: center;
+        -moz-border-radius: 5px; 
+        -webkit-border-radius: 5px;
+        line-height: 18px;
+    }
+    .BadStatus{
+        border:1px solid #FF55FF;
+        background-color: #CC0000;
+        color: white;
+
+    }
+</style>
+
+  <apex:form >
+      <apex:outputPanel id="panel">
+        <apex:actionFunction name="selectAll" action="{!selectAllDonation}" status="status56" reRender="panel"/>
+        
+        <apex:pageMessage rendered="{!viewMode}" summary="Please select Donation Start and End dates range and use 'Generate Zip File' button to generate zip file with tax receipts for selected Donations." severity="info" strength="3" />
+
+        <apex:pageMessages ></apex:pageMessages>
+        <apex:pageBlock title="Export PDF Wizard">
+            <div style="width: 110px; height: 110px; display: none; position: fixed; z-index: 999; top: 50%; left: 50%; margin-left: -55px; margin-top: -55px" class="statusbardiv"><apex:image url="{!$Resource.statusbar}" /></div>
+            <apex:actionStatus id="status56" onstart="$('.statusbardiv').css('display','block');" onstop="$('.statusbardiv').css('display','none');" />
+
+            <apex:outputPanel id="export" rendered="{!viewMode}">
+                <div style="margin:10px 0 10px 0">
+                    <apex:outputLabel for="stDate" value="Donation Start Date"/>&nbsp;
+                    <apex:input id="stDate" value="{!startDateParam}" type="date" styleClass="standardizer"/>
+                    <apex:outputLabel for="endDate" value="Donation End Date"/>&nbsp;
+                    <apex:input id="endDate" value="{!endDateParam}" type="date" styleClass="standardizer"/>
+                
+                    <apex:commandButton style="margin-left:10px" value="Search" action="{!getDonation}" status="status56" reRender="panel"/>
+                </div>
+                <div style="margin:10px 0 10px 0">
+                    <apex:outputLabel for="taxReceiptNum" value="Tax Receipt Number"/>&nbsp;
+                    <apex:input id="taxReceiptNum" value="{!taxReceiptNum}" />
+                    <apex:commandButton style="margin-left:10px" value="Search" action="{!getDonationByTaxNum}" status="status56" reRender="panel"/>
+                </div>
+                <apex:inputCheckbox id="alld" value="{!allDonat}" onchange="selectAll()"/>
+                <apex:outputLabel for="alld" value="All Donations - {!numDonations}"/>
+                <apex:pageBlockTable value="{!donationHelpList}" var="don">    
+                    <apex:column width="20px" headerValue="Download"><apex:inputCheckbox value="{!don.dwnld}"/></apex:column>
+                    <apex:column headerValue="Name" ><a href="/{!don.donId}" target="_blank" id="{!don.donId}"  >{!don.Name}</a></apex:column>
+                    
+                    
+                    <apex:column headerValue="Donation Amount" ><apex:outputText value="{0, number,$#,###,###.##}"><apex:param value="{!don.DonAmount}" /></apex:outputText></apex:column>
+                    
+                    <apex:column headerValue="Close Date" value="{!don.donationDate}"/>
+                 
+                    <apex:column headerValue="Tax Receipt #" value="{!don.TaxReceipts}"/>
+                 
+                    <apex:column headerValue="Acknowledgement Status" value="{!don.acknowledgementStatus}"/>
+                </apex:pageBlockTable>
+
+                <div style="margin:10px 0 10px 0" align="center">
+                  
+                    <apex:commandButton action="{!downloadAttachments}" value="Generate Zip File" status="status56" reRender="panel" rendered="{!viewMode}" />
+                </div>
+                
+            </apex:outputPanel>
+
+         <apex:outputPanel id="download" rendered="{!NOT(viewMode)}">
+                <!--Please use following link to download zip file with tax receipts: <a href="{!urlToDownload}">{!docName}</a-->
+
+                <apex:actionRegion >
+
+                    <!-- This action poller will check the status of the batch jobs every 5 seconds -->
+                   <apex:actionPoller action="{!getBatchJobStatusList}" rerender="jobs, downloadBlock, dlLinks" interval="5"/> 
+
+                    <apex:pageBlock title="Processing Status">
+                        <apex:pageBlockTable value="{!batchJobStatusList}" var="bjStatus" id="jobs">
+                            <apex:column value="{!bjStatus.job.JobItemsProcessed}"/>
+                            <apex:column value="{!bjStatus.job.TotalJobItems}"/>
+                            <apex:column value="{!bjStatus.job.Status}"/>
+                            <apex:column width="320px" >
+
+                                <!-- Here with have two divs that construct our progresses bar. An outter which is the entire bar,
+                                and and inner that represents the percent complete. We simply pass the percentComplete value to
+                                the inner div width and this will show how far along the job is. Brilliant! -->
+
+                              <div class="progressBar" style="background-color: {!CASE(bjStatus.job.Status,'Aborted','#551A8B','Completed','#f8f8f8','Failed','#9E0508','#f8f8f8')};">
+                                    <div class="progress" style="width: {!bjStatus.percentComplete}%; background-color: {!CASE(bjStatus.job.Status,'Aborted','#B23AEE','Completed','#20F472','Failed','#FFB6C1','#F7B64B')}; color: {!CASE(bjStatus.job.Status,'Aborted','white','Failed','white','black')}">
+                                        {!bjStatus.percentComplete}%
+                                    </div>
+                                </div>
+
+                            </apex:column>
+                            <apex:column value="{!bjStatus.job.CompletedDate}"/>
+                            <apex:column value="{!bjStatus.job.NumberOfErrors}"/>
+                            <apex:facet name="footer">
+                                
+                            </apex:facet>
+                        </apex:pageBlockTable>  
+                    </apex:pageBlock>
+                    
+                    <apex:pageBlock title="Please use the following link to download the zip file" id="downloadBlock">
+                        <apex:pageBlockTable value="{!fileNamesToDownload}" var="dlLink" id="dlLinks" >
+                            <apex:column >
+                                <apex:outputLink value="{!dlLink.Batch_Job_File_Link__c}" target="_self">{!dlLink.Batch_Job_File_Name__c}</apex:outputLink>
+                            </apex:column>
+                        </apex:pageBlockTable>
+                    </apex:pageBlock>
+                                
+                    <apex:pageBlockSection >
+                        
+                    </apex:pageBlockSection>
+                    
+
+                    
+                </apex:actionRegion>
+
+            </apex:outputPanel> 
+
+            <apex:pageBlockButtons >
+                <!--apex:outputLabel for="thankYouLetterLabel" value="Include Thank You Letters?" rendered="{!viewMode}"/>&nbsp;
+                <apex:inputCheckbox id="thankYouLetters" value="{!includeThankYouLetters}" styleClass="standardizer" title="Set to true to include thank You Letters in zip file" rendered="{!viewMode}"/> 
+                <apex:commandButton action="{!downloadAttachments}" value="Generate Zip File" status="status56" reRender="panel" rendered="{!viewMode}" /> -->
+                <apex:commandButton action="{!back}" value="Return to Wizard Main Page" status="status56" reRender="panel" rendered="{!NOT(viewMode)}"/> 
+            </apex:pageBlockButtons>
+            
+        </apex:pageBlock>
+      </apex:outputPanel>     
+  </apex:form>
+</apex:page>
